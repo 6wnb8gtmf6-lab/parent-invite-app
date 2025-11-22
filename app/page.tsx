@@ -101,96 +101,85 @@ export default async function Home() {
                               </svg>
                             </div>
                           </summary>
+
+                          {/* Inline Signup Form - Opens Below */}
+                          <div className="mt-6 pt-6 border-t-2 border-gray-100 animate-in fade-in slide-in-from-top-2 duration-300">
+                            <h4 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+                              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                              Complete Your Registration
+                            </h4>
+                            <form action={signupForSlot} className="space-y-5">
+                              <input type="hidden" name="slotId" value={slot.id} />
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                  <label htmlFor={`name-${slot.id}`} className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Your Name
+                                  </label>
+                                  <input
+                                    type="text"
+                                    name="parentName"
+                                    id={`name-${slot.id}`}
+                                    required
+                                    className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all"
+                                    placeholder="Enter your full name"
+                                  />
+                                </div>
+                                <div>
+                                  <label htmlFor={`email-${slot.id}`} className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Email Address
+                                  </label>
+                                  <input
+                                    type="email"
+                                    name="email"
+                                    id={`email-${slot.id}`}
+                                    required
+                                    className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all"
+                                    placeholder="your.email@example.com"
+                                  />
+                                </div>
+                              </div>
+                              <button
+                                type="submit"
+                                className="w-full flex justify-center items-center py-4 px-6 border border-transparent rounded-xl shadow-lg text-base font-bold text-white bg-gradient-to-r from-blue-600 to-amber-600 hover:from-blue-700 hover:to-amber-700 transition-all duration-200 transform hover:scale-[1.02]"
+                              >
+                                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                Confirm Registration
+                              </button>
+                            </form>
+                          </div>
                         </details>
                       </div>
                     )}
-                    {isFull && (
-                      <span className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold bg-gray-100 text-gray-700 border-2 border-gray-200">
-                        Fully Booked
-                      </span>
-                    )}
                   </div>
-
-                  {/* Inline Signup Form - Opens Below */}
-                  {!isFull && (
-                    <details className="group mt-4">
-                      <summary className="hidden"></summary>
-                      <div className="mt-6 pt-6 border-t-2 border-gray-100 group-open:animate-in group-open:fade-in group-open:slide-in-from-top-2">
-                        <h4 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                          </svg>
-                          Complete Your Registration
-                        </h4>
-                        <form action={signupForSlot} className="space-y-5">
-                          <input type="hidden" name="slotId" value={slot.id} />
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div>
-                              <label htmlFor={`name-${slot.id}`} className="block text-sm font-semibold text-gray-700 mb-2">
-                                Your Name
-                              </label>
-                              <input
-                                type="text"
-                                name="parentName"
-                                id={`name-${slot.id}`}
-                                required
-                                className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all"
-                                placeholder="Enter your full name"
-                              />
-                            </div>
-                            <div>
-                              <label htmlFor={`email-${slot.id}`} className="block text-sm font-semibold text-gray-700 mb-2">
-                                Email Address
-                              </label>
-                              <input
-                                type="email"
-                                name="email"
-                                id={`email-${slot.id}`}
-                                required
-                                className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all"
-                                placeholder="your.email@example.com"
-                              />
-                            </div>
-                          </div>
-                          <button
-                            type="submit"
-                            className="w-full flex justify-center items-center py-4 px-6 border border-transparent rounded-xl shadow-lg text-base font-bold text-white bg-gradient-to-r from-blue-600 to-amber-600 hover:from-blue-700 hover:to-amber-700 transition-all duration-200 transform hover:scale-[1.02]"
-                          >
-                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                            Confirm Registration
-                          </button>
-                        </form>
-                      </div>
-                    </details>
-                  )}
                 </div>
-              </div>
-            )
+                )
           })}
-          {slots.length === 0 && (
-            <div className="bg-white rounded-2xl shadow-lg p-20 text-center">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-amber-100 mb-6">
-                <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
+                {slots.length === 0 && (
+                  <div className="bg-white rounded-2xl shadow-lg p-20 text-center">
+                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-amber-100 mb-6">
+                      <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">No Slots Available</h3>
+                    <p className="text-lg text-gray-600">Check back soon for new conference times!</p>
+                  </div>
+                )}
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">No Slots Available</h3>
-              <p className="text-lg text-gray-600">Check back soon for new conference times!</p>
-            </div>
-          )}
-        </div>
       </div>
 
-      {/* Footer */}
-      <div className="border-t border-gray-200 bg-white/80 backdrop-blur-sm mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <p className="text-center text-gray-600">
-            © {new Date().getFullYear()} San Ramon Parent-Teacher Conferences. Building stronger connections for student success.
-          </p>
+        {/* Footer */}
+        <div className="border-t border-gray-200 bg-white/80 backdrop-blur-sm mt-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <p className="text-center text-gray-600">
+              © {new Date().getFullYear()} San Ramon Parent-Teacher Conferences. Building stronger connections for student success.
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-  )
+      )
 }
