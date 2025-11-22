@@ -8,7 +8,8 @@ export const dynamic = 'force-dynamic'
 
 type SlotWithDetails = Slot & {
     _count: { signups: number },
-    signups: { parentName: string, email: string }[]
+    signups: { parentName: string, email: string }[],
+    createdBy?: { username: string, name: string | null } | null
 }
 
 export default async function AdminPage() {
@@ -20,12 +21,15 @@ export default async function AdminPage() {
     let error = null
 
     try {
-        // Temporarily show all slots to everyone until schema is fixed
+        const where = isAdmin ? {} : { createdById: session.user.id }
+
         slots = await prisma.slot.findMany({
+            where,
             orderBy: { startTime: 'asc' },
             include: {
                 _count: { select: { signups: true } },
-                signups: { select: { parentName: true, email: true } }
+                signups: { select: { parentName: true, email: true } },
+                createdBy: { select: { username: true, name: true } }
             },
         })
     } catch (e: any) {
@@ -165,11 +169,11 @@ export default async function AdminPage() {
                                             </p>
 
                                             {/* Admin Info: Created By */}
-                                            {/* {isAdmin && slot.createdBy && (
+                                            {isAdmin && slot.createdBy && (
                                                 <p className="text-xs text-indigo-600 mt-1 font-medium">
                                                     Created by: {slot.createdBy.name || slot.createdBy.username}
                                                 </p>
-                                            )} */}
+                                            )}
 
                                             <div className="mt-2 flex items-center space-x-4">
                                                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${slot._count.signups >= slot.maxCapacity

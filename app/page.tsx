@@ -14,7 +14,8 @@ export default async function Home() {
     slots = await prisma.slot.findMany({
       orderBy: { startTime: 'asc' },
       include: {
-        _count: { select: { signups: true } }
+        _count: { select: { signups: true } },
+        createdBy: { select: { name: true, username: true } }
       },
     })
   } catch (e: any) {
@@ -85,7 +86,7 @@ export default async function Home() {
           {slots.map((slot) => {
             const isFull = slot._count.signups >= slot.maxCapacity
             // @ts-ignore - createdBy is not in the type definition yet but it is in the query
-            // const teacherName = slot.createdBy?.name || slot.createdBy?.username || 'Unknown Teacher'
+            const teacherName = slot.createdBy?.name || slot.createdBy?.username || 'Unknown Teacher'
 
             return (
               <details key={slot.id} className="group">
@@ -116,6 +117,9 @@ export default async function Home() {
                                   hour: 'numeric',
                                   minute: '2-digit',
                                 })}
+                              </p>
+                              <p className="text-sm text-indigo-600 font-semibold mt-1">
+                                Teacher: {teacherName}
                               </p>
                             </div>
                           </div>
