@@ -9,18 +9,27 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-amber-50">
-      {/* Hero Section */}
+      {/* Hero Section with Background Image */}
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-amber-600/10"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80"
+            alt="San Ramon California landscape"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-800/70 to-amber-900/80 backdrop-blur-[2px]"></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
           <div className="text-center">
             <h1 className="text-5xl md:text-7xl font-extrabold">
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-amber-600">
+              <span className="block text-white drop-shadow-2xl">
                 Parent-Teacher
               </span>
-              <span className="block text-gray-900 mt-2">Conference Signups</span>
+              <span className="block text-amber-300 mt-2 drop-shadow-2xl">Conference Signups</span>
             </h1>
-            <p className="mt-6 max-w-2xl mx-auto text-xl md:text-2xl text-gray-600 font-light">
+            <p className="mt-6 max-w-2xl mx-auto text-xl md:text-2xl text-white/95 font-light drop-shadow-lg">
               Connect with your child's teacher and be part of their educational journey in San Ramon.
             </p>
           </div>
@@ -28,10 +37,13 @@ export default async function Home() {
       </div>
 
       {/* Time Slots Section */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-        <div className="mb-12 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-3">Available Time Slots</h2>
-          <p className="text-lg text-gray-600">Select a convenient time to meet with the teacher</p>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 -mt-8">
+        {/* Floating Card Header */}
+        <div className="bg-white rounded-3xl shadow-2xl p-8 mb-8 border border-gray-100">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Available Time Slots</h2>
+            <p className="text-lg text-gray-600">Select a convenient time to meet with the teacher</p>
+          </div>
         </div>
 
         <div className="space-y-4">
@@ -142,7 +154,7 @@ export default async function Home() {
             )
           })}
           {slots.length === 0 && (
-            <div className="text-center py-20">
+            <div className="bg-white rounded-2xl shadow-lg p-20 text-center">
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-amber-100 mb-6">
                 <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -156,7 +168,7 @@ export default async function Home() {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-gray-200 bg-white/50 backdrop-blur-sm">
+      <div className="border-t border-gray-200 bg-white/80 backdrop-blur-sm mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <p className="text-center text-gray-600">
             © {new Date().getFullYear()} San Ramon Parent-Teacher Conferences. Building stronger connections for student success.
