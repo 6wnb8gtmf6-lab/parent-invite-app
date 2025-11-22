@@ -63,6 +63,26 @@ export default function DbToolsPage() {
                         </div>
                     )}
                 </div>
+
+                <div className="bg-white p-6 rounded-lg shadow">
+                    <h2 className="text-xl font-semibold mb-4">3. Fix Login Issues</h2>
+                    <p className="text-gray-600 mb-4">
+                        If users created before the fix cannot login, run this to convert all usernames to lowercase.
+                    </p>
+                    <button
+                        onClick={async () => {
+                            setLoading(true)
+                            const { normalizeUsernames } = await import('./actions')
+                            const result = await normalizeUsernames()
+                            setFixResult(result)
+                            setLoading(false)
+                        }}
+                        disabled={loading}
+                        className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
+                    >
+                        Normalize Usernames
+                    </button>
+                </div>
             </div>
         </div>
     )

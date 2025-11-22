@@ -12,7 +12,8 @@ import { Role, Status } from '@prisma/client'
 // TODO: Integrate with actual auth session.
 
 export async function createUser(formData: FormData) {
-    const username = formData.get('username') as string
+    const rawUsername = formData.get('username') as string
+    const username = rawUsername?.toLowerCase()
     const password = formData.get('password') as string
     const name = formData.get('name') as string
     const role = (formData.get('role') as Role) || Role.REGULAR

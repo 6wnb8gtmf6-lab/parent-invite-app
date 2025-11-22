@@ -47,3 +47,14 @@ export async function fixDatabaseSchema() {
         return { success: false, error: e.message }
     }
 }
+
+export async function normalizeUsernames() {
+    try {
+        // Update all usernames to be lowercase
+        await prisma.$executeRawUnsafe(`UPDATE "User" SET username = LOWER(username);`)
+        return { success: true, message: 'All usernames converted to lowercase' }
+    } catch (e: any) {
+        console.error('Normalization failed:', e)
+        return { success: false, error: e.message }
+    }
+}
