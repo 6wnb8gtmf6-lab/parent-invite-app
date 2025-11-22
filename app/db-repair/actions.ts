@@ -69,3 +69,14 @@ export async function listUsers() {
         return { success: false, error: e.message }
     }
 }
+
+export async function fixSlotSchema() {
+    try {
+        // Add createdById column to Slot table
+        await prisma.$executeRawUnsafe(`ALTER TABLE "Slot" ADD COLUMN IF NOT EXISTS "createdById" TEXT;`)
+        return { success: true, message: 'Slot table updated successfully' }
+    } catch (e: any) {
+        console.error('Slot schema fix failed:', e)
+        return { success: false, error: e.message }
+    }
+}
