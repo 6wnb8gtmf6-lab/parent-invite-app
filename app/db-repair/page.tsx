@@ -100,6 +100,26 @@ export default function DbToolsPage() {
                         List All Users
                     </button>
                 </div>
+
+                <div className="bg-white p-6 rounded-lg shadow">
+                    <h2 className="text-xl font-semibold mb-4">5. Fix Slot Table</h2>
+                    <p className="text-gray-600 mb-4">
+                        If you're seeing a grey screen, run this to add the missing createdById column to the Slot table.
+                    </p>
+                    <button
+                        onClick={async () => {
+                            setLoading(true)
+                            const { fixSlotSchema } = await import('./actions')
+                            const result = await fixSlotSchema()
+                            setFixResult(result)
+                            setLoading(false)
+                        }}
+                        disabled={loading}
+                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
+                    >
+                        Fix Slot Table Schema
+                    </button>
+                </div>
             </div>
         </div>
     )
