@@ -11,7 +11,7 @@ export default async function Home() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-amber-50">
       {/* Hero Section with San Ramon Background Image */}
       <div className="relative overflow-hidden">
-        {/* Background Image - Mount Diablo visible from San Ramon */}
+        {/* Background Image - Quail Run Elementary School */}
         <div className="absolute inset-0">
           <img
             src="https://qres.srvusd.net/pictures/Quail-Run-Elementary-School-e1575930457325.jpg"
@@ -52,11 +52,10 @@ export default async function Home() {
             return (
               <div
                 key={slot.id}
-                className={`group relative z-30 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 ${isFull ? 'opacity-60' : ''
+                className={`bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 ${isFull ? 'opacity-60' : ''
                   }`}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-amber-500/5 rounded-2xl"></div>
-                <div className="relative px-6 py-6 sm:px-8 sm:py-7">
+                <div className="px-6 py-6 sm:px-8 sm:py-7">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
@@ -92,54 +91,16 @@ export default async function Home() {
                     </div>
 
                     {!isFull && (
-                      <div className="sm:ml-4 flex-shrink-0 has-[:open]:z-50">
-                        <details className="group/details">
+                      <div className="sm:ml-4 flex-shrink-0">
+                        <details className="group">
                           <summary className="cursor-pointer list-none">
                             <div className="inline-flex items-center px-8 py-3 border border-transparent text-base font-semibold rounded-xl text-white bg-gradient-to-r from-blue-600 to-amber-600 hover:from-blue-700 hover:to-amber-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
                               Sign Up Now
-                              <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              <svg className="ml-2 w-5 h-5 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                               </svg>
                             </div>
                           </summary>
-                          <div className="absolute right-0 mt-4 w-96 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl z-50 p-6 border-2 border-gray-100">
-                            <h4 className="text-lg font-bold text-gray-900 mb-4">Complete Your Registration</h4>
-                            <form action={signupForSlot} className="space-y-4">
-                              <input type="hidden" name="slotId" value={slot.id} />
-                              <div>
-                                <label htmlFor={`name-${slot.id}`} className="block text-sm font-semibold text-gray-700 mb-2">
-                                  Your Name
-                                </label>
-                                <input
-                                  type="text"
-                                  name="parentName"
-                                  id={`name-${slot.id}`}
-                                  required
-                                  className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all"
-                                  placeholder="Enter your full name"
-                                />
-                              </div>
-                              <div>
-                                <label htmlFor={`email-${slot.id}`} className="block text-sm font-semibold text-gray-700 mb-2">
-                                  Email Address
-                                </label>
-                                <input
-                                  type="email"
-                                  name="email"
-                                  id={`email-${slot.id}`}
-                                  required
-                                  className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all"
-                                  placeholder="your.email@example.com"
-                                />
-                              </div>
-                              <button
-                                type="submit"
-                                className="w-full flex justify-center items-center py-3 px-6 border border-transparent rounded-xl shadow-lg text-base font-bold text-white bg-gradient-to-r from-blue-600 to-amber-600 hover:from-blue-700 hover:to-amber-700 transition-all duration-200 transform hover:scale-105"
-                              >
-                                Confirm Registration
-                              </button>
-                            </form>
-                          </div>
                         </details>
                       </div>
                     )}
@@ -149,6 +110,61 @@ export default async function Home() {
                       </span>
                     )}
                   </div>
+
+                  {/* Inline Signup Form - Opens Below */}
+                  {!isFull && (
+                    <details className="group mt-4">
+                      <summary className="hidden"></summary>
+                      <div className="mt-6 pt-6 border-t-2 border-gray-100 group-open:animate-in group-open:fade-in group-open:slide-in-from-top-2">
+                        <h4 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+                          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          Complete Your Registration
+                        </h4>
+                        <form action={signupForSlot} className="space-y-5">
+                          <input type="hidden" name="slotId" value={slot.id} />
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                              <label htmlFor={`name-${slot.id}`} className="block text-sm font-semibold text-gray-700 mb-2">
+                                Your Name
+                              </label>
+                              <input
+                                type="text"
+                                name="parentName"
+                                id={`name-${slot.id}`}
+                                required
+                                className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all"
+                                placeholder="Enter your full name"
+                              />
+                            </div>
+                            <div>
+                              <label htmlFor={`email-${slot.id}`} className="block text-sm font-semibold text-gray-700 mb-2">
+                                Email Address
+                              </label>
+                              <input
+                                type="email"
+                                name="email"
+                                id={`email-${slot.id}`}
+                                required
+                                className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all"
+                                placeholder="your.email@example.com"
+                              />
+                            </div>
+                          </div>
+                          <button
+                            type="submit"
+                            className="w-full flex justify-center items-center py-4 px-6 border border-transparent rounded-xl shadow-lg text-base font-bold text-white bg-gradient-to-r from-blue-600 to-amber-600 hover:from-blue-700 hover:to-amber-700 transition-all duration-200 transform hover:scale-[1.02]"
+                          >
+                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            Confirm Registration
+                          </button>
+                        </form>
+                      </div>
+                    </details>
+                  )}
                 </div>
               </div>
             )
