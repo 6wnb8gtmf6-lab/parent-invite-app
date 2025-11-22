@@ -58,3 +58,14 @@ export async function normalizeUsernames() {
         return { success: false, error: e.message }
     }
 }
+
+export async function listUsers() {
+    try {
+        const users = await prisma.user.findMany({
+            select: { id: true, username: true, role: true, status: true }
+        })
+        return { success: true, users }
+    } catch (e: any) {
+        return { success: false, error: e.message }
+    }
+}
