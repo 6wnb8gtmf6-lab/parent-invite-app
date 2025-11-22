@@ -1,10 +1,17 @@
 import { prisma } from '@/lib/db'
 import { createUser, updateUser, toggleUserStatus, resetPassword } from './actions'
 import { User } from '@prisma/client'
+import { getSession } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
 
 export default async function UsersPage() {
+    const session = await getSession()
+    if (!session || session.user.role !== 'ADMIN') {
+        redirect('/admin')
+    }
+
     let users: User[] = []
     let error = null
 
