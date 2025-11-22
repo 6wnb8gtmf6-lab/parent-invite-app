@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/db'
-import { createUser, updateUser, toggleUserStatus, resetPassword } from './actions'
+import { createUser, updateUser, toggleUserStatus, resetPassword, approveUser, rejectUser } from './actions'
 import { User } from '@prisma/client'
 import { getSession } from '@/lib/auth'
 import { redirect } from 'next/navigation'
@@ -48,6 +48,47 @@ export default async function UsersPage() {
     return (
         <div className="container mx-auto p-6">
             <h1 className="text-3xl font-bold mb-6">User Management</h1>
+
+            {/* Pending Approvals Section */}
+            {users.filter(u => u.status === 'SUSPENDED').length > 0 && (
+                <div className="mb-8 bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
+                    <h2 className="text-xl font-bold text-yellow-800 mb-4 flex items-center">
+                        <svg className="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        Pending Approval ({users.filter(u => u.status === 'SUSPENDED').length})
+                    </h2>
+                    <div className="space-y-3">
+                        {users.filter(u => u.status === 'SUSPENDED').map(user => (
+                            <div key={user.id} className="bg-white rounded-lg p-4 shadow flex items-center justify-between">
+                                <div>
+                                    <p className="font-bold text-gray-900">{user.username}</p>
+                                    {user.name && <p className="text-sm text-gray-600">{user.name}</p>}
+                                    <p className="text-xs text-gray-500">Requested: {new Date(user.createdAt).toLocaleDateString()}</p>
+                                </div>
+                                <div className="flex space-x-2">
+                                    <form action={approveUser.bind(null, user.id)}>
+                                        <button
+                                            type="submit"
+                                            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-medium text-sm"
+                                        >
+                                            ✓ Approve
+                                        </button>
+                                    </form>
+                                    <form action={rejectUser.bind(null, user.id)}>
+                                        <button
+                                            type="submit"
+                                            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 font-medium text-sm"
+                                        >
+                                            ✗ Reject
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <div className="bg-white shadow rounded-lg p-6 mb-8">
                 <h2 className="text-xl font-semibold mb-4">Create New User</h2>

@@ -108,3 +108,32 @@ export async function resetPassword(formData: FormData) {
 
     revalidatePath('/admin/users')
 }
+
+export async function approveUser(id: string) {
+    const session = await getSession()
+    if (!session || session.user.role !== 'ADMIN') {
+        throw new Error('Unauthorized')
+    }
+
+    await prisma.user.update({
+        where: { id },
+        data: { status: Status.ACTIVE },
+    })
+
+    revalidatePath('/admin/users')
+}
+
+export async function rejectUser(id: string) {
+    const session = await getSession()
+    if (!session || session.user.role !== 'ADMIN') {
+        throw new Error('Unauthorized')
+    }
+
+    // Delete the user account
+    await prisma.user.delete({
+        where: { id },
+    })
+
+    revalidatePath('/admin/users')
+}
+
