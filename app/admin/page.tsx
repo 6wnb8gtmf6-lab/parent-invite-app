@@ -1,10 +1,13 @@
 import { prisma } from '@/lib/db'
 import { createSlot, deleteSlot } from '../actions'
+import { Slot } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
+type SlotWithCount = Slot & { _count: { signups: number } }
+
 export default async function AdminPage() {
-    let slots = []
+    let slots: SlotWithCount[] = []
     let error = null
 
     try {
