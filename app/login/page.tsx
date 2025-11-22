@@ -10,6 +10,10 @@ export default function LoginPage() {
 
     useEffect(() => {
         if (typeof state !== 'string' && state?.success) {
+            // The middleware or layout will handle redirection based on role,
+            // but for now let's just go to home. Admin layout will redirect back if needed?
+            // Actually, let's just go to /admin. If they are regular, they get bounced to /.
+            // Wait, if they get bounced to /, that's fine.
             router.push('/admin')
         }
     }, [state, router])
