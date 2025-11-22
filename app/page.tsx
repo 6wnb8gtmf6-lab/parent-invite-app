@@ -154,6 +154,11 @@ export default async function Home() {
                         </details>
                       </div>
                     )}
+                    {isFull && (
+                      <span className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold bg-gray-100 text-gray-700 border-2 border-gray-200">
+                        Fully Booked
+                      </span>
+                    )}
                   </div>
                 </div>
                 )
