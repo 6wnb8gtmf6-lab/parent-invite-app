@@ -92,7 +92,7 @@ export default async function Home() {
                     </div>
 
                     {!isFull && (
-                      <div className="sm:ml-4 flex-shrink-0">
+                      <div className="sm:ml-4 flex-shrink-0 has-[:open]:z-50">
                         <details className="group/details">
                           <summary className="cursor-pointer list-none">
                             <div className="inline-flex items-center px-8 py-3 border border-transparent text-base font-semibold rounded-xl text-white bg-gradient-to-r from-blue-600 to-amber-600 hover:from-blue-700 hover:to-amber-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
