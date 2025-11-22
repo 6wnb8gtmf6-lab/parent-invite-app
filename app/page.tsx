@@ -52,7 +52,7 @@ export default async function Home() {
             return (
               <div
                 key={slot.id}
-                className={`group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 ${isFull ? 'opacity-60' : ''
+                className={`group relative z-30 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 ${isFull ? 'opacity-60' : ''
                   }`}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-amber-500/5 rounded-2xl"></div>
