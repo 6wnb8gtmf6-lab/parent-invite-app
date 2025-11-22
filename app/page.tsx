@@ -102,7 +102,7 @@ export default async function Home() {
                               </svg>
                             </div>
                           </summary>
-                          <div className="absolute right-0 mt-4 w-96 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl z-20 p-6 border-2 border-gray-100">
+                          <div className="absolute right-0 mt-4 w-96 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl z-50 p-6 border-2 border-gray-100">
                             <h4 className="text-lg font-bold text-gray-900 mb-4">Complete Your Registration</h4>
                             <form action={signupForSlot} className="space-y-4">
                               <input type="hidden" name="slotId" value={slot.id} />
