@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Slot {
+  id             String   @id @default(cuid())
+  startTime      DateTime
+  endTime        DateTime
+  maxCapacity    Int
+  currentSignups Int      @default(0)
+  signups        Signup[]
+}
+
+
+model Signup {
+  id         String   @id @default(cuid())
+  slotId     String
+  slot       Slot     @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  parentName String
+  email      String
+  createdAt  DateTime @default(now())
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+}
