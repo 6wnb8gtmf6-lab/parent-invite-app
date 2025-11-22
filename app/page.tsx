@@ -58,6 +58,17 @@ export default async function Home() {
             <p className="mt-6 max-w-2xl mx-auto text-xl md:text-2xl text-white/95 font-light drop-shadow-lg">
               Connect with your child's teacher and be part of their educational journey in San Ramon.
             </p>
+            <div className="mt-8">
+              <a
+                href="/login"
+                className="inline-flex items-center px-8 py-4 border-2 border-white/30 rounded-xl text-lg font-bold text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-all duration-200 transform hover:scale-105 shadow-xl"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+                Teacher Login
+              </a>
+            </div>
           </div>
         </div>
       </div>
