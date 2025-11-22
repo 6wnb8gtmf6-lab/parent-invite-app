@@ -1,10 +1,11 @@
 import { prisma } from '@/lib/db'
 import { createUser, updateUser, toggleUserStatus, resetPassword } from './actions'
+import { User } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
 export default async function UsersPage() {
-    let users = []
+    let users: User[] = []
     let error = null
 
     try {
