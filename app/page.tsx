@@ -1,11 +1,32 @@
 import { prisma } from '@/lib/db'
 import { signupForSlot } from './actions'
 
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
-  const slots = await prisma.slot.findMany({
-    orderBy: { startTime: 'asc' },
-    include: { _count: { select: { signups: true } } },
-  })
+  let slots = []
+  let error = null
+
+  try {
+    slots = await prisma.slot.findMany({
+      orderBy: { startTime: 'asc' },
+      include: { _count: { select: { signups: true } } },
+    })
+  } catch (e: any) {
+    console.error('Failed to fetch slots:', e)
+    error = e.message || 'Failed to load slots'
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">System Unavailable</h1>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-amber-50">

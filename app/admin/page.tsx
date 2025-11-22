@@ -1,11 +1,42 @@
 import { prisma } from '@/lib/db'
 import { createSlot, deleteSlot } from '../actions'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminPage() {
-    const slots = await prisma.slot.findMany({
-        orderBy: { startTime: 'asc' },
-        include: { _count: { select: { signups: true } } },
-    })
+    let slots = []
+    let error = null
+
+    try {
+        slots = await prisma.slot.findMany({
+            orderBy: { startTime: 'asc' },
+            include: { _count: { select: { signups: true } } },
+        })
+    } catch (e: any) {
+        console.error('Failed to fetch slots:', e)
+        error = e.message || 'Failed to load slots'
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-50 p-8">
+                <div className="max-w-7xl mx-auto">
+                    <div className="bg-red-50 border-l-4 border-red-400 p-4">
+                        <div className="flex">
+                            <div className="flex-shrink-0">
+                                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                </svg>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-red-700">Error loading dashboard: {error}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
@@ -127,8 +158,8 @@ export default async function AdminPage() {
                                             </p>
                                             <div className="mt-2 flex items-center space-x-4">
                                                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${slot._count.signups >= slot.maxCapacity
-                                                        ? 'bg-red-100 text-red-700'
-                                                        : 'bg-green-100 text-green-700'
+                                                    ? 'bg-red-100 text-red-700'
+                                                    : 'bg-green-100 text-green-700'
                                                     }`}>
                                                     {slot._count.signups} / {slot.maxCapacity} Booked
                                                 </span>
