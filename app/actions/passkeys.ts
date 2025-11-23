@@ -45,18 +45,30 @@ export async function verifyRegistrationAction(response: any) {
     const verification = await verifyRegistration(response, expectedChallenge)
 
     if (verification.verified && verification.registrationInfo) {
-        const { credential, credentialDeviceType, credentialBackedUp } = verification.registrationInfo
+        console.log('Registration Info:', JSON.stringify(verification.registrationInfo, null, 2))
+
+        const { registrationInfo } = verification
+        const credentialID = registrationInfo.credentialID || registrationInfo.credential?.id
+        const credentialPublicKey = registrationInfo.credentialPublicKey || registrationInfo.credential?.publicKey
+        const counter = registrationInfo.counter || registrationInfo.credential?.counter
+        const credentialDeviceType = registrationInfo.credentialDeviceType
+        const credentialBackedUp = registrationInfo.credentialBackedUp
+
+        if (!credentialID || !credentialPublicKey) {
+            console.error('Missing credential data in registration info', registrationInfo)
+            throw new Error('Registration failed: Missing credential data')
+        }
 
         await prisma.authenticator.create({
             data: {
                 userId: session.user.id,
-                credentialID: credential.id,
-                credentialPublicKey: Buffer.from(credential.publicKey).toString('base64'),
-                counter: credential.counter,
+                credentialID: credentialID,
+                credentialPublicKey: Buffer.from(credentialPublicKey).toString('base64'),
+                counter: counter || 0,
                 credentialDeviceType,
                 credentialBackedUp,
                 transports: response.response.transports ? JSON.stringify(response.response.transports) : null,
-                providerAccountId: credential.id,
+                providerAccountId: credentialID,
             }
         })
 
