@@ -15,13 +15,14 @@ async function main() {
         },
         create: {
             username: 'admin',
+            email: 'admin@example.com',
             passwordHash,
             role: Role.ADMIN,
             status: Status.ACTIVE,
         },
     })
 
-    const patrickPasswordHash = await bcrypt.hash('QuailRun1', 10)
+    const patrickPasswordHash = await bcrypt.hash('password123', 10)
     const patrick = await prisma.user.upsert({
         where: { username: 'patrick' },
         update: {
@@ -31,6 +32,7 @@ async function main() {
         },
         create: {
             username: 'patrick',
+            email: 'patrick@example.com',
             passwordHash: patrickPasswordHash,
             role: Role.ADMIN,
             status: Status.ACTIVE,

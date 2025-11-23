@@ -33,12 +33,13 @@ export async function checkUsernameAvailability(username: string) {
 export async function registerUser(formData: FormData) {
     try {
         const rawUsername = formData.get('username') as string
+        const email = formData.get('email') as string
         const password = formData.get('password') as string
         const confirmPassword = formData.get('confirmPassword') as string
         const name = formData.get('name') as string
 
         // Validate inputs
-        if (!rawUsername || !password || !confirmPassword) {
+        if (!rawUsername || !email || !password || !confirmPassword) {
             return { success: false, error: 'All fields are required' }
         }
 
@@ -61,13 +62,23 @@ export async function registerUser(formData: FormData) {
             return { success: false, error: 'Bot verification failed. Please try again.' }
         }
 
-        // Check username availability again (race condition protection)
-        const existing = await prisma.user.findUnique({
-            where: { username },
+        // Check username or email availability
+        const existing = await prisma.user.findFirst({
+            where: {
+                OR: [
+                    { username },
+                    { email }
+                ]
+            },
         })
 
         if (existing) {
-            return { success: false, error: 'Username is already taken' }
+            if (existing.username === username) {
+                return { success: false, error: 'Username is already taken' }
+            }
+            if (existing.email === email) {
+                return { success: false, error: 'Email is already registered' }
+            }
         }
 
         // Hash password
@@ -77,6 +88,7 @@ export async function registerUser(formData: FormData) {
         await prisma.user.create({
             data: {
                 username,
+                email,
                 passwordHash,
                 name: name || null,
                 role: Role.USER,

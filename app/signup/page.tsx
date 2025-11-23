@@ -8,6 +8,7 @@ import { getPasswordRequirements } from '@/lib/password'
 export default function SignupPage() {
     const router = useRouter()
     const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [name, setName] = useState('')
@@ -64,6 +65,7 @@ export default function SignupPage() {
         try {
             const formData = new FormData()
             formData.append('username', username)
+            formData.append('email', email)
             formData.append('password', password)
             formData.append('confirmPassword', confirmPassword)
             formData.append('name', name)
@@ -143,6 +145,24 @@ export default function SignupPage() {
                                     {usernameStatus.checking ? 'Checking...' : usernameStatus.message}
                                 </p>
                             )}
+                        </div>
+
+                        {/* Email */}
+                        <div>
+                            <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">
+                                Email Address *
+                            </label>
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                required
+                                autoComplete="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="block w-full px-4 py-3 border-2 border-gray-200 rounded-xl placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                                placeholder="your.email@example.com"
+                            />
                         </div>
 
                         {/* Name */}
