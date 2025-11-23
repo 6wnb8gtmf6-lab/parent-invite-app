@@ -80,3 +80,29 @@ export async function fixSlotSchema() {
         return { success: false, error: e.message }
     }
 }
+
+export async function fixSignupSchema() {
+    try {
+        // Add cancellationToken column to Signup table
+        await prisma.$executeRawUnsafe(`ALTER TABLE "Signup" ADD COLUMN IF NOT EXISTS "cancellationToken" TEXT;`)
+
+        // Generate tokens for existing signups
+        await prisma.$executeRawUnsafe(`
+            UPDATE "Signup" 
+            SET "cancellationToken" = gen_random_uuid()::text 
+            WHERE "cancellationToken" IS NULL;
+        `)
+
+        // Add unique constraint
+        await prisma.$executeRawUnsafe(`
+            ALTER TABLE "Signup" 
+            ADD CONSTRAINT IF NOT EXISTS "Signup_cancellationToken_key" 
+            UNIQUE ("cancellationToken");
+        `)
+
+        return { success: true, message: 'Signup table updated successfully' }
+    } catch (e: any) {
+        console.error('Signup schema fix failed:', e)
+        return { success: false, error: e.message }
+    }
+}
