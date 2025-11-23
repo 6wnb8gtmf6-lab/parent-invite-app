@@ -71,10 +71,10 @@ export default async function Home() {
                 </div>
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center">
                     <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-6 max-w-3xl">
-                        Parent-Teacher Conferences
+                        Class Sign-Ups
                     </h1>
                     <p className="text-xl text-slate-200 max-w-2xl font-light">
-                        Schedule your meeting efficiently. Connect with educators to support your child's growth in a modern learning environment.
+                        We appreciate your support and engagement in your child's education!
                     </p>
                 </div>
             </div>
