@@ -98,7 +98,7 @@ export default async function HomeDesign3() {
                                         </div>
                                         {!isFull && (
                                             <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
-                                                {spotsLeft} Spots
+                                                {spotsLeft} {spotsLeft === 1 ? 'Spot' : 'Spots'}
                                             </span>
                                         )}
                                     </div>

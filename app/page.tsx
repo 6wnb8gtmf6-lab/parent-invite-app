@@ -120,7 +120,7 @@ export default async function Home() {
 
                                     <div className="flex items-center gap-6">
                                         <div className={`text - sm font - medium ${isFull ? 'text-red-600' : 'text-emerald-600'} `}>
-                                            {isFull ? 'Fully Booked' : `${slot.maxCapacity - slot._count.signups} spots open`}
+                                            {isFull ? 'Fully Booked' : `${slot.maxCapacity - slot._count.signups} ${slot.maxCapacity - slot._count.signups === 1 ? 'spot' : 'spots'} open`}
                                         </div>
                                         <div className="w-8 h-8 flex items-center justify-center text-slate-400 group-open:rotate-180 transition-transform">
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
