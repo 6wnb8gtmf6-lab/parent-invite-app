@@ -20,6 +20,9 @@ export default async function Home() {
         teachers = await prisma.user.findMany({
             where: {
                 status: 'ACTIVE',
+                role: {
+                    not: 'ADMIN'
+                }
                 // Assuming we want to show all active users as teachers for now
                 // If there's a specific role for teachers, we can add it here:
                 // role: 'USER' 
