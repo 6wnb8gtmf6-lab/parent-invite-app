@@ -65,6 +65,7 @@ model Authenticator {
 enum Role {
   ADMIN
   USER
+  REGULAR
 }
 
 enum Status {

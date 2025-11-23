@@ -159,6 +159,26 @@ export default function DbToolsPage() {
                         Add Child Name Column
                     </button>
                 </div>
+
+                <div className="bg-white p-6 rounded-lg shadow">
+                    <h2 className="text-xl font-semibold mb-4">8. Migrate Roles (REGULAR to USER)</h2>
+                    <p className="text-gray-600 mb-4">
+                        Updates all users with the legacy 'REGULAR' role to the new 'USER' role. Run this before removing 'REGULAR' from the schema.
+                    </p>
+                    <button
+                        onClick={async () => {
+                            setLoading(true)
+                            const { migrateRolesToUser } = await import('./role-migration')
+                            const result = await migrateRolesToUser()
+                            setFixResult(result)
+                            setLoading(false)
+                        }}
+                        disabled={loading}
+                        className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:opacity-50"
+                    >
+                        Migrate Roles
+                    </button>
+                </div>
             </div>
         </div>
     )
