@@ -39,7 +39,7 @@ export default function RegisterPasskey() {
     }
 
     return (
-        <div className="mt-4">
+        <div>
             <button
                 onClick={handleRegister}
                 disabled={loading}

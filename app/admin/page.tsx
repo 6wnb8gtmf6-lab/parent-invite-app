@@ -66,9 +66,7 @@ export default async function AdminPage() {
                             </p>
                         </div>
                         <div className="flex items-center gap-4">
-                            <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-200">
-                                <RegisterPasskey />
-                            </div>
+                            <RegisterPasskey />
                             <form action={async () => {
                                 'use server'
                                 // ... logout logic ... 
