@@ -27,6 +27,13 @@ export default function SignupPage() {
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
     const [recaptchaLoaded, setRecaptchaLoaded] = useState(false)
+    const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+
+    // Debug logging
+    useEffect(() => {
+        console.log('reCAPTCHA Site Key:', siteKey ? 'Present' : 'Not found')
+        console.log('Environment:', process.env.NODE_ENV)
+    }, [])
 
     const passwordReqs = getPasswordRequirements(password)
     const passwordValid = passwordReqs.every((req) => req.passed)
@@ -112,15 +119,19 @@ export default function SignupPage() {
         }
     }
 
-    const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
-
     return (
         <>
             {siteKey && (
-                <Script
-                    src="https://www.google.com/recaptcha/api.js"
-                    onLoad={() => setRecaptchaLoaded(true)}
-                />
+                <>
+                    <Script
+                        src="https://www.google.com/recaptcha/api.js"
+                        onLoad={() => {
+                            console.log('reCAPTCHA script loaded')
+                            setRecaptchaLoaded(true)
+                        }}
+                        onError={() => console.error('Failed to load reCAPTCHA script')}
+                    />
+                </>
             )}
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
                 <div className="absolute inset-0 overflow-hidden">
