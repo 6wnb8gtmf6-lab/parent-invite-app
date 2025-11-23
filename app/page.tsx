@@ -2,8 +2,17 @@ import { prisma } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
+type Teacher = {
+    id: string
+    name: string | null
+    username: string
+    _count: {
+        slots: number
+    }
+}
+
 export default async function Home() {
-    let teachers = []
+    let teachers: Teacher[] = []
     let error = null
 
     try {
