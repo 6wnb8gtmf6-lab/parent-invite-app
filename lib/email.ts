@@ -25,25 +25,17 @@ export async function sendConfirmationEmail(
     // Check for API key at runtime
     const apiKey = process.env.RESEND_API_KEY
 
-    console.log('=== EMAIL DEBUG ===')
-    console.log('RESEND_API_KEY exists:', !!apiKey)
-    console.log('RESEND_API_KEY length:', apiKey?.length || 0)
-    console.log('EMAIL_FROM:', process.env.EMAIL_FROM)
-    console.log('NODE_ENV:', process.env.NODE_ENV)
-
     // If Resend not configured, log and return success (development mode)
     if (!apiKey) {
         console.log('Email not configured. Would have sent confirmation to:', signup.email)
-        console.log('Cancellation link:', `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/cancel/${signup.cancellationToken}`)
         return { success: true }
     }
 
     const resend = new Resend(apiKey)
 
     try {
-        // Use Vercel's automatic URL or fallback to production domain
-        const baseUrl = process.env.NEXT_PUBLIC_URL ||
-            (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://parent-invite-app.vercel.app')
+        // Always use production domain for email links
+        const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://quailrun.app'
         const cancellationUrl = `${baseUrl}/cancel/${signup.cancellationToken}`
 
         const emailHtml = `

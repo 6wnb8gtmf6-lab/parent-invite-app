@@ -4,17 +4,9 @@ import { cancelSignup } from './actions'
 
 export default async function CancelPage({ params }: { params: Promise<{ token: string }> }) {
     try {
-        console.log('=== CANCEL PAGE DEBUG ===')
-        console.log('Raw params:', params)
-        console.log('Typeof params:', typeof params)
-
         const awaitedParams = await params
-        console.log('Awaited params:', awaitedParams)
 
         const { token } = awaitedParams
-        console.log('Token extracted:', token)
-        console.log('Token type:', typeof token)
-        console.log('Token length:', token?.length)
 
         const signup = await prisma.signup.findUnique({
             where: { cancellationToken: token },
@@ -28,11 +20,8 @@ export default async function CancelPage({ params }: { params: Promise<{ token: 
         })
 
         if (!signup) {
-            console.log('Signup not found for token:', token)
             notFound()
         }
-
-        console.log('Signup found:', signup.id)
 
         const teacherName = signup.slot.createdBy?.name || signup.slot.createdBy?.username || 'Unknown Teacher'
 
