@@ -22,7 +22,7 @@ export async function migrateRolesToUser() {
 
         const result = await prisma.user.updateMany({
             where: {
-                role: 'REGULAR'
+                role: 'REGULAR' as any
             },
             data: {
                 role: 'USER'
