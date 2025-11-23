@@ -4,8 +4,17 @@ import { cancelSignup } from './actions'
 
 export default async function CancelPage({ params }: { params: Promise<{ token: string }> }) {
     try {
-        const { token } = await params
-        console.log('Cancellation page - Looking for token:', token)
+        console.log('=== CANCEL PAGE DEBUG ===')
+        console.log('Raw params:', params)
+        console.log('Typeof params:', typeof params)
+
+        const awaitedParams = await params
+        console.log('Awaited params:', awaitedParams)
+
+        const { token } = awaitedParams
+        console.log('Token extracted:', token)
+        console.log('Token type:', typeof token)
+        console.log('Token length:', token?.length)
 
         const signup = await prisma.signup.findUnique({
             where: { cancellationToken: token },
