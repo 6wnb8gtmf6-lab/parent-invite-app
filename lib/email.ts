@@ -95,9 +95,38 @@ export async function sendConfirmationEmail(
         })}
                                         </p>
                                         
-                                        <p style="margin: 0 0 10px; font-size: 14px; color: #6b7280; font-weight: bold;">
-                                            👨‍🏫 TEACHER
-                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 20px; border-top: 1px solid #e5e7eb;">
+                                        <table width="100%" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td width="33%" valign="top">
+                                                    <p style="margin: 0 0 5px; font-size: 12px; color: #6b7280; font-weight: bold; text-transform: uppercase;">
+                                                        👨‍🏫 Teacher
+                                                    </p>
+                                                    <p style="margin: 0; font-size: 14px; color: #1f2937; font-weight: 600;">
+                                                        ${slot.teacherName}
+                                                    </p>
+                                                </td>
+                                                <td width="33%" valign="top">
+                                                    <p style="margin: 0 0 5px; font-size: 12px; color: #6b7280; font-weight: bold; text-transform: uppercase;">
+                                                        👤 Parent
+                                                    </p>
+                                                    <p style="margin: 0; font-size: 14px; color: #1f2937; font-weight: 600;">
+                                                        ${signup.parentName}
+                                                    </p>
+                                                </td>
+                                                <td width="33%" valign="top">
+                                                    <p style="margin: 0 0 5px; font-size: 12px; color: #6b7280; font-weight: bold; text-transform: uppercase;">
+                                                        🎓 Student
+                                                    </p>
+                                                    <p style="margin: 0; font-size: 14px; color: #1f2937; font-weight: 600;">
+                                                        ${signup.childName}
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
                                     </td>
                                 </tr>
                             </table>
