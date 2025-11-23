@@ -48,11 +48,12 @@ export async function verifyRegistrationAction(response: any) {
         console.log('Registration Info:', JSON.stringify(verification.registrationInfo, null, 2))
 
         const { registrationInfo } = verification
-        const credentialID = registrationInfo.credentialID || registrationInfo.credential?.id
-        const credentialPublicKey = registrationInfo.credentialPublicKey || registrationInfo.credential?.publicKey
-        const counter = registrationInfo.counter || registrationInfo.credential?.counter
-        const credentialDeviceType = registrationInfo.credentialDeviceType
-        const credentialBackedUp = registrationInfo.credentialBackedUp
+        const info = registrationInfo as any
+        const credentialID = info.credentialID || info.credential?.id
+        const credentialPublicKey = info.credentialPublicKey || info.credential?.publicKey
+        const counter = info.counter || info.credential?.counter
+        const credentialDeviceType = info.credentialDeviceType
+        const credentialBackedUp = info.credentialBackedUp
 
         if (!credentialID || !credentialPublicKey) {
             console.error('Missing credential data in registration info', registrationInfo)
