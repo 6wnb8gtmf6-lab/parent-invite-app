@@ -34,9 +34,11 @@ export default async function AdminPage() {
                     _count: { select: { signups: true } },
                     signups: { select: { parentName: true, childName: true, email: true } },
                     createdBy: { select: { username: true, name: true } },
+                    // @ts-ignore
                     template: { select: { name: true } }
                 },
             }),
+            // @ts-ignore
             prisma.slotTemplate.findMany({
                 orderBy: { name: 'asc' }
             })
