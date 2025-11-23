@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs'
 import { encrypt, getSession } from '@/lib/auth'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { sendConfirmationEmail } from './lib/email'
+import { sendConfirmationEmail } from '@/lib/email'
 
 
 export async function createSlot(formData: FormData) {
