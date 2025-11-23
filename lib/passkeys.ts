@@ -62,18 +62,23 @@ export async function verifyAuthentication(body: any, expectedChallenge: string,
     }
 
     const authObject = {
-        credentialID: authenticator.credentialID,
+        credentialID: new Uint8Array(Buffer.from(authenticator.credentialID, 'base64url')), // Decode base64url string to bytes
         credentialPublicKey: new Uint8Array(Buffer.from(authenticator.credentialPublicKey, 'base64')),
         counter: authenticator.counter,
         transports: authenticator.transports ? JSON.parse(authenticator.transports) : undefined,
     }
     console.log('Constructed authenticator object for verification:', JSON.stringify({ ...authObject, credentialPublicKey: '[REDACTED]' }, null, 2))
 
-    return await verifyAuthenticationResponse({
-        response: body,
-        expectedChallenge,
-        expectedOrigin: origin,
-        expectedRPID: rpID,
-        authenticator: authObject,
-    } as any);
+    try {
+        return await verifyAuthenticationResponse({
+            response: body,
+            expectedChallenge,
+            expectedOrigin: origin,
+            expectedRPID: rpID,
+            authenticator: authObject,
+        } as any);
+    } catch (error) {
+        console.error('Error inside verifyAuthenticationResponse:', error)
+        throw error
+    }
 }
