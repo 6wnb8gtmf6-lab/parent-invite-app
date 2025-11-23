@@ -78,7 +78,7 @@ export default async function TemplatesPage() {
 
                 {/* Templates List */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {templates.map((template) => (
+                    {templates.map((template: any) => (
                         <div key={template.id} className="bg-white rounded-xl shadow-md p-6 border border-gray-100 relative group">
                             <div className="flex justify-between items-start mb-4">
                                 <div>

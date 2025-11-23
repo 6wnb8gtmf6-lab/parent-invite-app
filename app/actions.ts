@@ -105,7 +105,7 @@ export async function signupForSlot(formData: FormData) {
             email,
             contribution,
             donation,
-        },
+        } as any,
     })
 
     // Send confirmation email (don't fail if email errors)
