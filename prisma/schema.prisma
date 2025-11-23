@@ -24,12 +24,13 @@ model Slot {
 
 
 model Signup {
-  id         String   @id @default(cuid())
-  slotId     String
-  slot       Slot     @relation(fields: [slotId], references: [id], onDelete: Cascade)
-  parentName String
-  email      String
-  createdAt  DateTime @default(now())
+  id                String   @id @default(cuid())
+  slotId            String
+  slot              Slot     @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  parentName        String
+  email             String
+  createdAt         DateTime @default(now())
+  cancellationToken String   @unique @default(cuid())
 }
 
 model User {

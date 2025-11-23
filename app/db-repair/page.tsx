@@ -120,6 +120,26 @@ export default function DbToolsPage() {
                         Fix Slot Table Schema
                     </button>
                 </div>
+
+                <div className="bg-white p-6 rounded-lg shadow">
+                    <h2 className="text-xl font-semibold mb-4">6. Fix Signup Table (Email Confirmations)</h2>
+                    <p className="text-gray-600 mb-4">
+                        Adds cancellation tokens to the Signup table for email confirmation feature.
+                    </p>
+                    <button
+                        onClick={async () => {
+                            setLoading(true)
+                            const { fixSignupSchema } = await import('./actions')
+                            const result = await fixSignupSchema()
+                            setFixResult(result)
+                            setLoading(false)
+                        }}
+                        disabled={loading}
+                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
+                    >
+                        Fix Signup Table Schema
+                    </button>
+                </div>
             </div>
         </div>
     )

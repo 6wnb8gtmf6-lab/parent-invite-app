@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs'
 import { encrypt, getSession } from '@/lib/auth'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { sendConfirmationEmail } from './lib/email'
 
 
 export async function createSlot(formData: FormData) {
@@ -43,10 +44,13 @@ export async function signupForSlot(formData: FormData) {
     const parentName = formData.get('parentName') as string
     const email = formData.get('email') as string
 
-    // Check capacity
+    // Check capacity and get teacher info
     const slot = await prisma.slot.findUnique({
         where: { id: slotId },
-        include: { signups: true },
+        include: {
+            signups: true,
+            createdBy: { select: { name: true, username: true } }
+        },
     })
 
     if (!slot) throw new Error('Slot not found')
@@ -54,13 +58,36 @@ export async function signupForSlot(formData: FormData) {
         throw new Error('Slot is full')
     }
 
-    await prisma.signup.create({
+    // Create signup
+    const signup = await prisma.signup.create({
         data: {
             slotId,
             parentName,
             email,
         },
     })
+
+    // Send confirmation email (don't fail if email errors)
+    try {
+        const teacherName = slot.createdBy?.name || slot.createdBy?.username || 'Unknown Teacher'
+        await sendConfirmationEmail(
+            {
+                id: signup.id,
+                parentName: signup.parentName,
+                email: signup.email,
+                cancellationToken: signup.cancellationToken,
+            },
+            {
+                id: slot.id,
+                startTime: slot.startTime,
+                endTime: slot.endTime,
+                teacherName,
+            }
+        )
+    } catch (error) {
+        console.error('Failed to send confirmation email:', error)
+        // Don't throw - signup is still successful
+    }
 
     revalidatePath('/')
     revalidatePath('/admin')
