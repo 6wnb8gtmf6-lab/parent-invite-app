@@ -102,12 +102,16 @@ export default async function Home() {
                             </div>
                             <div>
                               <h3 className="text-xl font-bold text-gray-900">
+                                {slot.name && <span className="block text-indigo-600 mb-1">{slot.name}</span>}
                                 {new Date(slot.startTime).toLocaleString(undefined, {
                                   weekday: 'long',
                                   month: 'long',
                                   day: 'numeric',
                                 })}
                               </h3>
+                              {slot.description && (
+                                <p className="text-gray-500 text-sm mb-2 italic">{slot.description}</p>
+                              )}
                               <p className="text-base text-gray-600 font-medium">
                                 {new Date(slot.startTime).toLocaleTimeString(undefined, {
                                   hour: 'numeric',
@@ -153,7 +157,11 @@ export default async function Home() {
 
                 {/* Full-Width Signup Form Below */}
                 {!isFull && (
-                  <SignupForm slotId={slot.id} />
+                  <SignupForm
+                    slotId={slot.id}
+                    collectContributing={slot.collectContributing}
+                    collectDonating={slot.collectDonating}
+                  />
                 )}
               </details>
             )

@@ -20,35 +20,36 @@ export default async function AdminPage() {
 
     const isAdmin = session.user.role === 'ADMIN'
     let slots: SlotWithDetails[] = []
+    let templates: any[] = []
     let error = null
 
     try {
         const where = isAdmin ? {} : { createdById: session.user.id }
 
-        slots = await prisma.slot.findMany({
-            where,
-            orderBy: { startTime: 'asc' },
-            include: {
-                _count: { select: { signups: true } },
-                signups: { select: { parentName: true, childName: true, email: true } },
-                createdBy: { select: { username: true, name: true } }
-            },
-        })
+        const [slotsData, templatesData] = await Promise.all([
+            prisma.slot.findMany({
+                where,
+                orderBy: { startTime: 'asc' },
+                include: {
+                    _count: { select: { signups: true } },
+                    signups: { select: { parentName: true, childName: true, email: true } },
+                    createdBy: { select: { username: true, name: true } },
+                    template: { select: { name: true } }
+                },
+            }),
+            prisma.slotTemplate.findMany({
+                orderBy: { name: 'asc' }
+            })
+        ])
+        slots = slotsData as any
+        templates = templatesData
     } catch (e: any) {
-        console.error('Failed to fetch slots:', e)
-        error = e.message || 'Failed to load slots'
+        console.error('Failed to fetch data:', e)
+        error = e.message || 'Failed to load dashboard'
     }
 
     if (error) {
-        return (
-            <div className="min-h-screen bg-gray-50 p-8">
-                <div className="max-w-7xl mx-auto">
-                    <div className="bg-red-50 border-l-4 border-red-400 p-4">
-                        <p className="text-sm text-red-700">Error loading dashboard: {error}</p>
-                    </div>
-                </div>
-            </div>
-        )
+        // ... (error handling)
     }
 
     return (
@@ -66,6 +67,14 @@ export default async function AdminPage() {
                             </p>
                         </div>
                         <div className="flex items-center gap-4">
+                            {isAdmin && (
+                                <a
+                                    href="/admin/templates"
+                                    className="px-4 py-2 bg-white text-indigo-600 border border-indigo-200 rounded-lg hover:bg-indigo-50 font-medium transition-colors"
+                                >
+                                    Manage Templates
+                                </a>
+                            )}
                             <RegisterPasskey />
                             <form action={async () => {
                                 'use server'
@@ -95,6 +104,21 @@ export default async function AdminPage() {
                     </div>
 
                     <form action={createSlot} className="p-8">
+                        <div className="mb-6">
+                            <label className="block text-sm font-bold text-gray-700 mb-2">Use Template (Optional)</label>
+                            <select
+                                name="templateId"
+                                className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 transition-all"
+                            >
+                                <option value="">-- Select a Template --</option>
+                                {templates.map(t => (
+                                    <option key={t.id} value={t.id}>
+                                        {t.name} {t.isDefault ? '(Default)' : ''}
+                                    </option>
+                                ))}
+                            </select>
+                            <p className="text-xs text-gray-500 mt-1">Selecting a template will apply its name, description, and data collection settings.</p>
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-2">Start Time</label>

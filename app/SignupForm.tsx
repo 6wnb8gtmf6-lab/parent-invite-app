@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { signupForSlot } from './actions'
 
-export default function SignupForm({ slotId }: { slotId: string }) {
+export default function SignupForm({ slotId, collectContributing, collectDonating }: { slotId: string, collectContributing?: boolean, collectDonating?: boolean }) {
     const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
     const [errorMessage, setErrorMessage] = useState('')
 
@@ -101,6 +101,38 @@ export default function SignupForm({ slotId }: { slotId: string }) {
                         placeholder="your.email@example.com"
                     />
                 </div>
+
+                {collectContributing && (
+                    <div>
+                        <label htmlFor={`contribution-${slotId}`} className="block text-sm font-semibold text-gray-700 mb-2">
+                            Contributing
+                        </label>
+                        <input
+                            type="text"
+                            name="contribution"
+                            id={`contribution-${slotId}`}
+                            disabled={status === 'submitting'}
+                            className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all disabled:opacity-60 disabled:bg-gray-50"
+                            placeholder="How would you like to contribute?"
+                        />
+                    </div>
+                )}
+
+                {collectDonating && (
+                    <div>
+                        <label htmlFor={`donation-${slotId}`} className="block text-sm font-semibold text-gray-700 mb-2">
+                            Donating
+                        </label>
+                        <input
+                            type="text"
+                            name="donation"
+                            id={`donation-${slotId}`}
+                            disabled={status === 'submitting'}
+                            className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all disabled:opacity-60 disabled:bg-gray-50"
+                            placeholder="Donation details (optional)"
+                        />
+                    </div>
+                )}
                 <button
                     type="submit"
                     disabled={status === 'submitting'}

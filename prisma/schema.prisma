@@ -20,6 +20,12 @@ model Slot {
   signups        Signup[]
   createdById    String?
   createdBy      User?    @relation(fields: [createdById], references: [id])
+  name           String?
+  description    String?
+  collectContributing Boolean @default(false)
+  collectDonating     Boolean @default(false)
+  templateId     String?
+  template       SlotTemplate? @relation(fields: [templateId], references: [id])
 }
 
 
@@ -32,6 +38,20 @@ model Signup {
   email             String
   createdAt         DateTime @default(now())
   cancellationToken String?  @unique @default(cuid())
+  contribution      String?
+  donation          String?
+}
+
+model SlotTemplate {
+  id                  String   @id @default(cuid())
+  name                String
+  description         String?
+  isDefault           Boolean  @default(false)
+  collectContributing Boolean  @default(false)
+  collectDonating     Boolean  @default(false)
+  slots               Slot[]
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 }
 
 model User {

@@ -16,14 +16,33 @@ export async function createSlot(formData: FormData) {
     const startTime = new Date(formData.get('startTime') as string)
     const endTime = new Date(formData.get('endTime') as string)
     const maxCapacity = parseInt(formData.get('maxCapacity') as string)
+    const templateId = formData.get('templateId') as string
+
+    let slotData: any = {
+        startTime,
+        endTime,
+        maxCapacity,
+        createdById: session.user.id,
+    }
+
+    if (templateId) {
+        const template = await prisma.slotTemplate.findUnique({
+            where: { id: templateId }
+        })
+        if (template) {
+            slotData = {
+                ...slotData,
+                templateId,
+                name: template.name,
+                description: template.description,
+                collectContributing: template.collectContributing,
+                collectDonating: template.collectDonating,
+            }
+        }
+    }
 
     await prisma.slot.create({
-        data: {
-            startTime,
-            endTime,
-            maxCapacity,
-            createdById: session.user.id,
-        },
+        data: slotData,
     })
 
     revalidatePath('/admin')
@@ -58,6 +77,8 @@ export async function signupForSlot(formData: FormData) {
     const parentName = formData.get('parentName') as string
     const childName = formData.get('childName') as string
     const email = formData.get('email') as string
+    const contribution = formData.get('contribution') as string
+    const donation = formData.get('donation') as string
 
     // Check capacity and get teacher info
     const slot = await prisma.slot.findUnique({
@@ -80,6 +101,8 @@ export async function signupForSlot(formData: FormData) {
             parentName,
             childName,
             email,
+            contribution,
+            donation,
         },
     })
 
