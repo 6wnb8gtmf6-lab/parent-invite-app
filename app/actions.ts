@@ -78,7 +78,7 @@ export async function signupForSlot(formData: FormData) {
                 {
                     id: signup.id,
                     parentName: signup.parentName,
-                    childName: signup.childName,
+                    childName: signup.childName || 'Student',
                     email: signup.email,
                     cancellationToken: signup.cancellationToken,
                 },
