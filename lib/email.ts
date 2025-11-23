@@ -97,9 +97,6 @@ export async function sendConfirmationEmail(
                                         <p style="margin: 0 0 10px; font-size: 14px; color: #6b7280; font-weight: bold;">
                                             👨‍🏫 TEACHER
                                         </p>
-                                        <p style="margin: 0; font-size: 16px; color: #1f2937;">
-                                            ${slot.teacherName}
-                                        </p>
                                     </td>
                                 </tr>
                             </table>
