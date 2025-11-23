@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
 
 type SlotWithDetails = Slot & {
     _count: { signups: number },
-    signups: { parentName: string, email: string }[],
+    signups: { parentName: string, childName: string | null, email: string }[],
     createdBy?: { username: string, name: string | null } | null
 }
 
