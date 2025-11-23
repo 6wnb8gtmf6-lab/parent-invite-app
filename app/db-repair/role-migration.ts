@@ -1,9 +1,15 @@
 'use server'
 
 import { prisma } from '@/lib/db'
+import { getSession } from '@/lib/auth'
 
 export async function migrateRolesToUser() {
     try {
+        const session = await getSession()
+        if (!session || session.user.role !== 'ADMIN') {
+            throw new Error('Unauthorized')
+        }
+
         // Update all users with role 'REGULAR' to 'USER'
         // We have to cast to text to avoid enum issues if possible, or just update if the enum supports both.
         // Since we added REGULAR back, both exist.

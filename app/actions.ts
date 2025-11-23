@@ -31,6 +31,20 @@ export async function createSlot(formData: FormData) {
 }
 
 export async function deleteSlot(id: string) {
+    const session = await getSession()
+    if (!session) throw new Error('Unauthorized')
+
+    const slot = await prisma.slot.findUnique({
+        where: { id },
+        select: { createdById: true }
+    })
+
+    if (!slot) throw new Error('Slot not found')
+
+    if (session.user.role !== 'ADMIN' && slot.createdById !== session.user.id) {
+        throw new Error('Unauthorized: You can only delete your own slots')
+    }
+
     await prisma.slot.delete({
         where: { id },
     })

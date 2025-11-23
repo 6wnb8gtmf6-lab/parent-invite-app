@@ -2,9 +2,18 @@
 
 import { prisma } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
+import { getSession } from '@/lib/auth'
+
+async function requireAdmin() {
+    const session = await getSession()
+    if (!session || session.user.role !== 'ADMIN') {
+        throw new Error('Unauthorized')
+    }
+}
 
 export async function checkDatabaseStatus() {
     try {
+        await requireAdmin()
         // Check if User table has 'name' column
         const result = await prisma.$queryRaw`
             SELECT column_name, data_type 
@@ -19,6 +28,7 @@ export async function checkDatabaseStatus() {
 
 export async function fixDatabaseSchema() {
     try {
+        await requireAdmin()
         // 1. Create Enums if they don't exist
         try {
             await prisma.$executeRawUnsafe(`CREATE TYPE "Role" AS ENUM ('ADMIN', 'USER');`)
@@ -50,6 +60,7 @@ export async function fixDatabaseSchema() {
 
 export async function normalizeUsernames() {
     try {
+        await requireAdmin()
         // Update all usernames to be lowercase
         await prisma.$executeRawUnsafe(`UPDATE "User" SET username = LOWER(username);`)
         return { success: true, message: 'All usernames converted to lowercase' }
@@ -61,6 +72,7 @@ export async function normalizeUsernames() {
 
 export async function listUsers() {
     try {
+        await requireAdmin()
         const users = await prisma.user.findMany({
             select: { id: true, username: true, role: true, status: true }
         })
@@ -72,6 +84,7 @@ export async function listUsers() {
 
 export async function fixSlotSchema() {
     try {
+        await requireAdmin()
         // Add createdById column to Slot table
         await prisma.$executeRawUnsafe(`ALTER TABLE "Slot" ADD COLUMN IF NOT EXISTS "createdById" TEXT;`)
         return { success: true, message: 'Slot table updated successfully' }
@@ -83,6 +96,7 @@ export async function fixSlotSchema() {
 
 export async function fixSignupSchema() {
     try {
+        await requireAdmin()
         // Add cancellationToken column to Signup table
         await prisma.$executeRawUnsafe(`ALTER TABLE "Signup" ADD COLUMN IF NOT EXISTS "cancellationToken" TEXT;`)
 
