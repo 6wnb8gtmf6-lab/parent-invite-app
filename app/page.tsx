@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db'
+import TeacherGrid from './components/TeacherGrid'
 
 export const dynamic = 'force-dynamic'
 
@@ -90,42 +91,7 @@ export default async function Home() {
 
             {/* Teachers Grid */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <div className="flex items-center justify-between mb-10">
-                    <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Our Teachers</h2>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {teachers.map((teacher) => (
-                        <a
-                            key={teacher.id}
-                            href={`/teachers/${teacher.username}`}
-                            className="group bg-white rounded-2xl border border-gray-200 p-6 hover:border-blue-400 hover:shadow-lg transition-all duration-200 flex items-center gap-4"
-                        >
-                            <div className="w-16 h-16 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-full flex items-center justify-center text-blue-600 text-xl font-bold group-hover:scale-110 transition-transform">
-                                {(teacher.name || teacher.username).charAt(0).toUpperCase()}
-                            </div>
-                            <div>
-                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
-                                    {teacher.name || teacher.username}
-                                </h3>
-                                <p className="text-sm text-gray-500">
-                                    {teacher._count.slots} {teacher._count.slots === 1 ? 'slot' : 'slots'} available
-                                </p>
-                            </div>
-                            <div className="ml-auto text-gray-300 group-hover:text-blue-600 transition-colors">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </div>
-                        </a>
-                    ))}
-
-                    {teachers.length === 0 && (
-                        <div className="col-span-full text-center py-20 bg-white border border-gray-200 border-dashed rounded-2xl">
-                            <p className="text-slate-500">No active teachers found.</p>
-                        </div>
-                    )}
-                </div>
+                <TeacherGrid teachers={teachers} />
             </div>
         </div>
     )
