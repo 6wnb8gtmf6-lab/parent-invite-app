@@ -2,12 +2,13 @@ import { prisma } from '@/lib/db'
 import { notFound } from 'next/navigation'
 import { cancelSignup } from './actions'
 
-export default async function CancelPage({ params }: { params: { token: string } }) {
+export default async function CancelPage({ params }: { params: Promise<{ token: string }> }) {
     try {
-        console.log('Cancellation page - Looking for token:', params.token)
+        const { token } = await params
+        console.log('Cancellation page - Looking for token:', token)
 
         const signup = await prisma.signup.findUnique({
-            where: { cancellationToken: params.token },
+            where: { cancellationToken: token },
             include: {
                 slot: {
                     include: {
@@ -18,7 +19,7 @@ export default async function CancelPage({ params }: { params: { token: string }
         })
 
         if (!signup) {
-            console.log('Signup not found for token:', params.token)
+            console.log('Signup not found for token:', token)
             notFound()
         }
 
@@ -90,7 +91,7 @@ export default async function CancelPage({ params }: { params: { token: string }
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4">
-                        <form action={cancelSignup.bind(null, params.token)} className="flex-1">
+                        <form action={cancelSignup.bind(null, token)} className="flex-1">
                             <button
                                 type="submit"
                                 className="w-full px-6 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
