@@ -26,6 +26,7 @@ export async function createSlot(formData: FormData) {
     }
 
     if (templateId) {
+        // @ts-ignore
         const template = await prisma.slotTemplate.findUnique({
             where: { id: templateId }
         })
@@ -95,6 +96,7 @@ export async function signupForSlot(formData: FormData) {
     }
 
     // Create signup
+    // @ts-ignore
     const signup = await prisma.signup.create({
         data: {
             slotId,

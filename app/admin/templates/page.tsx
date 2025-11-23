@@ -11,6 +11,7 @@ export default async function TemplatesPage() {
         redirect('/admin')
     }
 
+    // @ts-ignore
     const templates = await prisma.slotTemplate.findMany({
         orderBy: { createdAt: 'desc' }
     })

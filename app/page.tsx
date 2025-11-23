@@ -5,7 +5,13 @@ import { Slot } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
-type SlotWithCount = Slot & { _count: { signups: number } }
+type SlotWithCount = Slot & {
+  _count: { signups: number }
+  name?: string | null
+  description?: string | null
+  collectContributing?: boolean
+  collectDonating?: boolean
+}
 
 export default async function Home() {
   let slots: SlotWithCount[] = []
