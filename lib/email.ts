@@ -256,3 +256,82 @@ export async function sendCancellationEmail(
         console.error('Failed to send cancellation email:', error)
     }
 }
+
+export async function sendPasswordResetEmail(
+    email: string,
+    token: string
+): Promise<void> {
+    const apiKey = process.env.RESEND_API_KEY
+
+    if (!apiKey) {
+        console.log('Email not configured. Would have sent password reset to:', email)
+        console.log('Reset Token:', token)
+        return
+    }
+
+    const resend = new Resend(apiKey)
+
+    try {
+        const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://quailrun.app'
+        const resetUrl = `${baseUrl}/reset-password?token=${token}`
+
+        const emailHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Reset Your Password</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f3f4f6;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 0;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; padding: 40px;">
+                    <tr>
+                        <td>
+                            <h1 style="margin: 0 0 20px; color: #1f2937; font-size: 24px;">
+                                Reset Your Password
+                            </h1>
+                            
+                            <p style="margin: 0 0 20px; font-size: 16px; color: #374151;">
+                                We received a request to reset your password. Click the button below to choose a new password.
+                            </p>
+                            
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="center" style="padding: 20px 0;">
+                                        <a href="${resetUrl}" style="display: inline-block; padding: 16px 32px; background-color: #2563eb; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
+                                            Reset Password
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <p style="margin: 20px 0 0; font-size: 14px; color: #6b7280;">
+                                If you didn't request this, you can safely ignore this email. The link will expire in 1 hour.
+                            </p>
+                            
+                            <p style="margin: 30px 0 0; font-size: 14px; color: #6b7280; text-align: center;">
+                                Or copy this link:<br>
+                                <a href="${resetUrl}" style="color: #2563eb; word-break: break-all;">${resetUrl}</a>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+        `
+
+        await resend.emails.send({
+            from: fromEmail,
+            to: email,
+            subject: 'Reset Your Password - Quail Run Elementary',
+            html: emailHtml,
+        })
+    } catch (error) {
+        console.error('Failed to send password reset email:', error)
+    }
+}
