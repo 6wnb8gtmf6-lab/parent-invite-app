@@ -40,7 +40,7 @@ export default function LoginPage() {
                             </span>
                         </h2>
                         <p className="mt-3 text-gray-600 font-medium">
-                            Secure access to conference management
+                            Secure access to slot management
                         </p>
                     </div>
 
@@ -87,6 +87,13 @@ export default function LoginPage() {
                                         className="block w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                                         placeholder="Enter your password"
                                     />
+                                </div>
+                                <div className="flex items-center justify-end mt-2">
+                                    <div className="text-sm">
+                                        <a href="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
+                                            Forgot your password?
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
