@@ -94,7 +94,7 @@ export default async function TeacherPage({ params }: { params: Promise<{ userna
                         </div>
                         <div>
                             <h1 className="text-3xl font-bold text-gray-900">{teacherName}</h1>
-                            <p className="text-lg text-gray-600 mt-1">Conference Sign-Ups</p>
+                            <p className="text-lg text-gray-600 mt-1">Sign-Ups</p>
                         </div>
                     </div>
                 </div>
