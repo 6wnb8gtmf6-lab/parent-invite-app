@@ -14,6 +14,7 @@ type SlotWithCount = Slot & {
     collectContributing?: boolean
     collectDonating?: boolean
     displayNameAsTitle?: boolean
+    hideTime?: boolean
 }
 
 export default async function TeacherPage({ params }: { params: Promise<{ username: string }> }) {
@@ -161,18 +162,22 @@ export default async function TeacherPage({ params }: { params: Promise<{ userna
                                         </div>
                                         <div>
                                             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 mb-1">
-                                                {slot.displayNameAsTitle && slot.name ? (
+                                                {(slot.displayNameAsTitle || slot.hideTime) && slot.name ? (
                                                     <div className="flex flex-col">
                                                         <h3 className="text-lg font-bold text-slate-900">{slot.name}</h3>
-                                                        <span className="text-sm text-slate-500 font-medium">
-                                                            {new Date(slot.startTime).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} - {new Date(slot.endTime).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
-                                                        </span>
+                                                        {!slot.hideTime && (
+                                                            <span className="text-sm text-slate-500 font-medium">
+                                                                {new Date(slot.startTime).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} - {new Date(slot.endTime).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 ) : (
                                                     <>
-                                                        <h3 className="text-lg font-bold text-slate-900">
-                                                            {new Date(slot.startTime).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} - {new Date(slot.endTime).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
-                                                        </h3>
+                                                        {!slot.hideTime && (
+                                                            <h3 className="text-lg font-bold text-slate-900">
+                                                                {new Date(slot.startTime).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} - {new Date(slot.endTime).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
+                                                            </h3>
+                                                        )}
                                                         {slot.name && (
                                                             <span className="self-start sm:self-auto px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wider rounded-sm">
                                                                 {slot.name}

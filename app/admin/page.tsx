@@ -198,14 +198,27 @@ export default async function AdminPage() {
                                             )}
                                         </div>
                                     </div>
-                                    <form action={deleteSlot.bind(null, slot.id)}>
-                                        <button
-                                            type="submit"
-                                            className="px-6 py-3 rounded-xl text-sm font-bold text-red-600 hover:text-white hover:bg-red-600 border-2 border-red-200 hover:border-red-600 transition-all duration-200"
+                                    <div className="flex items-center gap-2">
+                                        <a
+                                            href={`/admin/slots/${slot.id}`}
+                                            className="px-4 py-3 rounded-xl text-sm font-bold text-indigo-600 hover:text-white hover:bg-indigo-600 border-2 border-indigo-200 hover:border-indigo-600 transition-all duration-200"
                                         >
-                                            Delete
-                                        </button>
-                                    </form>
+                                            Edit
+                                        </a>
+                                        <form action={deleteSlot.bind(null, slot.id)}>
+                                            <button
+                                                type="submit"
+                                                className="px-4 py-3 rounded-xl text-sm font-bold text-red-600 hover:text-white hover:bg-red-600 border-2 border-red-200 hover:border-red-600 transition-all duration-200"
+                                                onClick={(e) => {
+                                                    if (!confirm('Are you sure you want to delete this slot?')) {
+                                                        e.preventDefault()
+                                                    }
+                                                }}
+                                            >
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         ))}
