@@ -1,5 +1,6 @@
 'use client'
 
+import { useActionState } from 'react'
 import { createTemplate, updateTemplate } from './actions'
 
 type Template = {
@@ -14,10 +15,23 @@ type Template = {
     isDefault: boolean
 }
 
+const initialState = {
+    success: false,
+    message: ''
+}
+
 export default function TemplateForm({ template }: { template?: Template }) {
+    const [state, action, isPending] = useActionState(template ? updateTemplate : createTemplate, initialState)
+
     return (
-        <form action={template ? updateTemplate : createTemplate} className="space-y-6">
+        <form action={action} className="space-y-6">
             {template && <input type="hidden" name="id" value={template.id} />}
+
+            {state.message && (
+                <div className={`p-4 rounded-xl ${state.success ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                    {state.message}
+                </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -102,9 +116,10 @@ export default function TemplateForm({ template }: { template?: Template }) {
 
             <button
                 type="submit"
-                className="w-full md:w-auto px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-md"
+                disabled={isPending}
+                className="w-full md:w-auto px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
             >
-                {template ? 'Save Changes' : 'Create Template'}
+                {isPending ? 'Saving...' : (template ? 'Save Changes' : 'Create Template')}
             </button>
         </form>
     )
