@@ -51,7 +51,7 @@ model SlotTemplate {
   isDefault           Boolean  @default(false)
   collectContributing Boolean  @default(false)
   collectDonating     Boolean  @default(false)
-  donationLink        String?
+  collectDonationLink Boolean  @default(false)
   slots               Slot[]
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
@@ -119,3 +119,5 @@ enum Status {
   ACTIVE
   SUSPENDED
 }
+
+

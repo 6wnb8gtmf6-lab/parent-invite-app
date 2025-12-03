@@ -18,11 +18,14 @@ export async function createSlot(formData: FormData) {
     const maxCapacity = parseInt(formData.get('maxCapacity') as string)
     const templateId = formData.get('templateId') as string
 
+    const donationLink = formData.get('donationLink') as string
+
     let slotData: any = {
         startTime,
         endTime,
         maxCapacity,
         createdById: session.user.id,
+        donationLink, // Save it initially, might be cleared if template disallows (or we just keep it)
     }
 
     if (templateId) {
@@ -36,9 +39,10 @@ export async function createSlot(formData: FormData) {
                 templateId,
                 name: template.name,
                 description: template.description,
-                donationLink: template.donationLink,
                 collectContributing: template.collectContributing,
                 collectDonating: template.collectDonating,
+                // Only keep donation link if template allows it
+                donationLink: template.collectDonationLink ? donationLink : null,
             }
         }
     }

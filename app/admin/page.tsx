@@ -152,6 +152,16 @@ export default async function AdminPage() {
                                 />
                             </div>
                         </div>
+                        <div className="mb-6">
+                            <label className="block text-sm font-bold text-gray-700 mb-2">Donation Link (Optional)</label>
+                            <input
+                                type="url"
+                                name="donationLink"
+                                placeholder="e.g., https://amazon.com/..."
+                                className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 transition-all"
+                            />
+                            <p className="text-xs text-gray-500 mt-1">This link will only be saved if the selected template allows it.</p>
+                        </div>
                         <button
                             type="submit"
                             className="w-full flex justify-center items-center py-4 px-6 border border-transparent rounded-xl shadow-lg text-base font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 transform hover:scale-[1.02]"
