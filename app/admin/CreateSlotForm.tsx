@@ -10,7 +10,12 @@ type Template = {
     collectDonationLink: boolean
 }
 
-export default function CreateSlotForm({ templates }: { templates: Template[] }) {
+type EventPage = {
+    id: string
+    title: string
+}
+
+export default function CreateSlotForm({ templates, events }: { templates: Template[], events: EventPage[] }) {
     const [selectedTemplateId, setSelectedTemplateId] = useState<string>('')
 
     const selectedTemplate = templates.find(t => t.id === selectedTemplateId)
@@ -18,22 +23,39 @@ export default function CreateSlotForm({ templates }: { templates: Template[] })
 
     return (
         <form action={createSlot} className="p-8">
-            <div className="mb-6">
-                <label className="block text-sm font-bold text-gray-700 mb-2">Use Template (Optional)</label>
-                <select
-                    name="templateId"
-                    value={selectedTemplateId}
-                    onChange={(e) => setSelectedTemplateId(e.target.value)}
-                    className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 transition-all"
-                >
-                    <option value="">-- Select a Template --</option>
-                    {templates.map(t => (
-                        <option key={t.id} value={t.id}>
-                            {t.name} {t.isDefault ? '(Default)' : ''}
-                        </option>
-                    ))}
-                </select>
-                <p className="text-xs text-gray-500 mt-1">Selecting a template will apply its name, description, and data collection settings.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Use Template (Optional)</label>
+                    <select
+                        name="templateId"
+                        value={selectedTemplateId}
+                        onChange={(e) => setSelectedTemplateId(e.target.value)}
+                        className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 transition-all"
+                    >
+                        <option value="">-- Select a Template --</option>
+                        {templates.map(t => (
+                            <option key={t.id} value={t.id}>
+                                {t.name} {t.isDefault ? '(Default)' : ''}
+                            </option>
+                        ))}
+                    </select>
+                    <p className="text-xs text-gray-500 mt-1">Selecting a template will apply its name, description, and data collection settings.</p>
+                </div>
+                <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Assign to Event (Optional)</label>
+                    <select
+                        name="eventPageId"
+                        className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 transition-all"
+                    >
+                        <option value="">-- General / No Event --</option>
+                        {events.map(e => (
+                            <option key={e.id} value={e.id}>
+                                {e.title}
+                            </option>
+                        ))}
+                    </select>
+                    <p className="text-xs text-gray-500 mt-1">Assign this slot to a specific event page.</p>
+                </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div>

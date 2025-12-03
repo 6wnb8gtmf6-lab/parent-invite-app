@@ -1,80 +1,31 @@
 import { prisma } from '@/lib/db'
-import SignupForm from '../../SignupForm'
-import DonationLink from './DonationLink'
-import { Slot } from '@prisma/client'
 import { notFound } from 'next/navigation'
+import SignupForm from '../../SignupForm'
+import DonationLink from '../../teachers/[username]/DonationLink'
 
 export const dynamic = 'force-dynamic'
 
-type SlotWithCount = Slot & {
-    _count: { signups: number }
-    name?: string | null
-    description?: string | null
-    donationLink?: string | null
-    collectContributing?: boolean
-    collectDonating?: boolean
-    displayNameAsTitle?: boolean
-}
+export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params
 
-export default async function TeacherPage({ params }: { params: Promise<{ username: string }> }) {
-    const { username } = await params
-
-    // Fetch user first to check existence and status
-    const user = await prisma.user.findFirst({
-        where: {
-            username: {
-                equals: decodeURIComponent(username),
-                mode: 'insensitive'
+    const event = await prisma.eventPage.findUnique({
+        where: { slug },
+        include: {
+            user: { select: { name: true, username: true } },
+            slots: {
+                orderBy: { startTime: 'asc' },
+                include: {
+                    _count: { select: { signups: true } }
+                }
             }
-        },
-        select: { id: true, name: true, username: true, status: true }
+        }
     })
 
-    if (!user || user.status === 'SUSPENDED') {
+    if (!event) {
         notFound()
     }
 
-    const teacherName = user.name || user.username
-
-    let slots: SlotWithCount[] = []
-    let events: any[] = []
-    let error = null
-
-    try {
-        const [slotsData, eventsData] = await Promise.all([
-            prisma.slot.findMany({
-                where: { createdById: user.id },
-                orderBy: { startTime: 'asc' },
-                include: {
-                    _count: { select: { signups: true } },
-                    createdBy: { select: { name: true, username: true } }
-                },
-            }),
-            prisma.eventPage.findMany({
-                where: { userId: user.id },
-                orderBy: { createdAt: 'desc' },
-                include: {
-                    _count: { select: { slots: true } }
-                }
-            })
-        ])
-        slots = slotsData
-        events = eventsData
-    } catch (e: any) {
-        console.error('Failed to fetch slots:', e)
-        error = e.message || 'Failed to load slots'
-    }
-
-    if (error) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">System Unavailable</h1>
-                    <p className="text-gray-600">{error}</p>
-                </div>
-            </div>
-        )
-    }
+    const teacherName = event.user.name || event.user.username
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans">
@@ -91,64 +42,42 @@ export default async function TeacherPage({ params }: { params: Promise<{ userna
                             <span className="font-bold text-gray-900 text-xl tracking-tight">Quail Run Elementary</span>
                         </a>
                     </div>
-                    <a href="/login" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
-                        Teacher Login
-                    </a>
                 </div>
             </header>
 
-            {/* Teacher Hero */}
+            {/* Event Hero */}
             <div className="bg-white border-b border-gray-200">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <div className="flex items-center gap-6">
-                        <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center text-blue-600 text-3xl font-bold shadow-inner">
-                            {teacherName.charAt(0).toUpperCase()}
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    {event.imageUrl && (
+                        <div className="mb-8 rounded-2xl overflow-hidden shadow-lg max-h-96">
+                            <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover" />
                         </div>
+                    )}
+
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900">{teacherName}</h1>
-                            <p className="text-lg text-gray-600 mt-1">Sign-Ups</p>
+                            <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-indigo-100 text-indigo-700 mb-4">
+                                Event
+                            </div>
+                            <h1 className="text-4xl font-bold text-gray-900 mb-4">{event.title}</h1>
+                            {event.description && (
+                                <p className="text-xl text-gray-600 max-w-3xl">{event.description}</p>
+                            )}
+                        </div>
+                        <div className="text-right">
+                            <p className="text-sm text-gray-500 font-medium uppercase tracking-wider">Organized by</p>
+                            <p className="text-lg font-bold text-gray-900">{teacherName}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Events List */}
-            {events.length > 0 && (
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Upcoming Events</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {events.map((event) => (
-                            <a
-                                key={event.id}
-                                href={`/events/${event.slug}`}
-                                className="block bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md hover:border-blue-300 transition-all group"
-                            >
-                                {event.imageUrl && (
-                                    <div className="h-48 overflow-hidden">
-                                        <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                    </div>
-                                )}
-                                <div className="p-6">
-                                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{event.title}</h3>
-                                    {event.description && (
-                                        <p className="text-gray-600 text-sm line-clamp-2 mb-4">{event.description}</p>
-                                    )}
-                                    <div className="flex items-center text-sm text-gray-500 font-medium">
-                                        <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-md">
-                                            {event._count.slots} {event._count.slots === 1 ? 'Slot' : 'Slots'} Available
-                                        </span>
-                                    </div>
-                                </div>
-                            </a>
-                        ))}
-                    </div>
-                </div>
-            )}
-
             {/* Slots List */}
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Available Time Slots</h2>
+
                 <div className="space-y-4">
-                    {slots.map((slot) => {
+                    {event.slots.map((slot: any) => {
                         const isFull = slot._count.signups >= slot.maxCapacity
 
                         return (
@@ -215,9 +144,9 @@ export default async function TeacherPage({ params }: { params: Promise<{ userna
                         )
                     })}
 
-                    {slots.length === 0 && (
+                    {event.slots.length === 0 && (
                         <div className="text-center py-20 bg-white border border-gray-200 border-dashed rounded-xl">
-                            <p className="text-slate-500">No signup slots are currently available for this teacher.</p>
+                            <p className="text-slate-500">No time slots have been added to this event yet.</p>
                         </div>
                     )}
                 </div>

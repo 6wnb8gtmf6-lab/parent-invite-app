@@ -22,12 +22,14 @@ export default async function AdminPage() {
     const isAdmin = session.user.role === 'ADMIN'
     let slots: SlotWithDetails[] = []
     let templates: any[] = []
+    let events: any[] = []
     let error = null
 
     try {
         const where = isAdmin ? {} : { createdById: session.user.id }
+        const eventWhere = isAdmin ? {} : { userId: session.user.id }
 
-        const [slotsData, templatesData] = await Promise.all([
+        const [slotsData, templatesData, eventsData] = await Promise.all([
             prisma.slot.findMany({
                 where,
                 orderBy: { startTime: 'asc' },
@@ -42,10 +44,17 @@ export default async function AdminPage() {
             // @ts-ignore
             prisma.slotTemplate.findMany({
                 orderBy: { name: 'asc' }
+            }),
+            // @ts-ignore
+            prisma.eventPage.findMany({
+                where: eventWhere,
+                orderBy: { title: 'asc' },
+                select: { id: true, title: true }
             })
         ])
         slots = slotsData as any
         templates = templatesData
+        events = eventsData
     } catch (e: any) {
         console.error('Failed to fetch data:', e)
         error = e.message || 'Failed to load dashboard'
@@ -70,6 +79,12 @@ export default async function AdminPage() {
                             </p>
                         </div>
                         <div className="flex items-center gap-4">
+                            <a
+                                href="/admin/events"
+                                className="px-4 py-2 bg-white text-indigo-600 border border-indigo-200 rounded-lg hover:bg-indigo-50 font-medium transition-colors"
+                            >
+                                Manage Events
+                            </a>
                             {isAdmin && (
                                 <a
                                     href="/admin/templates"
@@ -100,13 +115,13 @@ export default async function AdminPage() {
                                 </svg>
                             </div>
                             <div>
-                                <h2 className="text-2xl font-bold text-white">Create New Time Slot</h2>
-                                <p className="text-blue-100 text-sm mt-1">Add a new time for parents to book</p>
+                                <h2 className="text-2xl font-bold text-white">Create New Slot</h2>
+                                <p className="text-blue-100 text-sm mt-1">Add slot for parents to book</p>
                             </div>
                         </div>
                     </div>
 
-                    <CreateSlotForm templates={templates} />
+                    <CreateSlotForm templates={templates} events={events} />
                 </div>
 
                 {/* Slots List */}

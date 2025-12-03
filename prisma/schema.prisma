@@ -28,6 +28,21 @@ model Slot {
   donationLink   String?
   templateId     String?
   template       SlotTemplate? @relation(fields: [templateId], references: [id])
+  eventPageId    String?
+  eventPage      EventPage?    @relation(fields: [eventPageId], references: [id])
+}
+
+model EventPage {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?
+  imageUrl    String?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  slots       Slot[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 
@@ -70,6 +85,7 @@ model User {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @default(now()) @updatedAt
   slots         Slot[]
+  eventPages    EventPage[]
   authenticators Authenticator[]
   resetTokens   PasswordResetToken[]
   whitelistedEmails WhitelistedEmail[]
@@ -121,6 +137,8 @@ enum Status {
   ACTIVE
   SUSPENDED
 }
+
+
 
 
 
