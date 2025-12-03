@@ -46,7 +46,7 @@ export default function EventForm({ event }: { event?: any }) {
                 type="submit"
                 className="w-full md:w-auto px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-md"
             >
-                {event ? 'Update Event' : 'Create Event'}
+                {event ? 'Save Changes' : 'Create Event'}
             </button>
         </form>
     )
