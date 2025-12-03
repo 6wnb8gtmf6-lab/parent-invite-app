@@ -13,50 +13,59 @@ export async function createSlot(formData: FormData) {
     const session = await getSession()
     if (!session) throw new Error('Unauthorized')
 
-    const startTime = new Date(formData.get('startTime') as string)
-    const endTime = new Date(formData.get('endTime') as string)
-    const maxCapacity = parseInt(formData.get('maxCapacity') as string)
-    const templateId = formData.get('templateId') as string
-
-    const donationLink = formData.get('donationLink') as string
-    const eventPageId = formData.get('eventPageId') as string
     const name = formData.get('name') as string
+    const startTimeStr = formData.get('startTime') as string
+    const endTimeStr = formData.get('endTime') as string
+    const maxCapacityStr = formData.get('maxCapacity') as string
+    const templateId = formData.get('templateId') as string
+    const eventPageId = formData.get('eventPageId') as string
+    const donationLink = formData.get('donationLink') as string
     const hideTime = formData.get('hideTime') === 'on'
+    const hideEndTime = formData.get('hideEndTime') === 'on'
 
-    let slotData: any = {
-        startTime,
-        endTime,
-        maxCapacity,
-        createdById: session.user.id,
-        donationLink, // Save it initially, might be cleared if template disallows (or we just keep it)
-        eventPageId: eventPageId || null,
-        name: name || null,
-        hideTime,
-    }
-
+    // If template is selected, copy its properties
+    let templateData: any = {}
     if (templateId) {
-        // @ts-ignore
-        const template = await prisma.slotTemplate.findUnique({
-            where: { id: templateId }
-        })
+        const template = await prisma.slotTemplate.findUnique({ where: { id: templateId } })
         if (template) {
-            slotData = {
-                ...slotData,
-                templateId,
-                name: name || template.name, // Use custom name if provided, else template name
+            templateData = {
+                name: template.name,
                 description: template.description,
                 collectContributing: template.collectContributing,
                 collectDonating: template.collectDonating,
                 displayNameAsTitle: template.displayNameAsTitle,
-                // Only keep donation link if template allows it
-                donationLink: template.collectDonationLink ? donationLink : null,
-                hideTime: hideTime || template.hideTime, // Use custom hideTime if checked, else template default
+                hideTime: template.hideTime,
+                hideEndTime: template.hideEndTime
             }
         }
     }
 
+    const finalName = name || templateData.name
+    const finalHideTime = hideTime || templateData.hideTime || false
+    const finalHideEndTime = hideEndTime || templateData.hideEndTime || false
+
+    const startTime = new Date(startTimeStr)
+    let finalEndTime = new Date(endTimeStr)
+
+    // If hiding end time and no valid end time provided, default to +1 hour
+    if (finalHideEndTime && (!endTimeStr || isNaN(finalEndTime.getTime()))) {
+        finalEndTime = new Date(startTime.getTime() + 60 * 60 * 1000)
+    }
+
     await prisma.slot.create({
-        data: slotData,
+        data: {
+            startTime,
+            endTime: finalEndTime,
+            maxCapacity: parseInt(maxCapacityStr),
+            createdById: session.user.id,
+            templateId: templateId || null,
+            eventPageId: eventPageId || null,
+            donationLink: donationLink || null,
+            ...templateData,
+            name: finalName,
+            hideTime: finalHideTime,
+            hideEndTime: finalHideEndTime
+        }
     })
 
     revalidatePath('/admin')
@@ -66,36 +75,39 @@ export async function createSlot(formData: FormData) {
 export async function updateSlot(formData: FormData) {
     const session = await getSession()
     if (!session) throw new Error('Unauthorized')
+    const user = session.user
 
     const id = formData.get('id') as string
     const name = formData.get('name') as string
-    const startTime = new Date(formData.get('startTime') as string)
-    const endTime = new Date(formData.get('endTime') as string)
-    const maxCapacity = parseInt(formData.get('maxCapacity') as string)
+    const startTimeStr = formData.get('startTime') as string
+    const endTimeStr = formData.get('endTime') as string
+    const maxCapacityStr = formData.get('maxCapacity') as string
     const hideTime = formData.get('hideTime') === 'on'
+    const hideEndTime = formData.get('hideEndTime') === 'on'
     const eventPageId = formData.get('eventPageId') as string
     const donationLink = formData.get('donationLink') as string
 
-    const slot = await prisma.slot.findUnique({
-        where: { id },
-        select: { createdById: true }
-    })
-
+    const slot = await prisma.slot.findUnique({ where: { id } })
     if (!slot) throw new Error('Slot not found')
-    if (session.user.role !== 'ADMIN' && slot.createdById !== session.user.id) {
-        throw new Error('Unauthorized')
+    if (user.role !== 'ADMIN' && slot.createdById !== user.id) throw new Error('Unauthorized')
+
+    const startTime = new Date(startTimeStr)
+    let finalEndTime = new Date(endTimeStr)
+    if (hideEndTime && (!endTimeStr || isNaN(finalEndTime.getTime()))) {
+        finalEndTime = new Date(new Date(startTime).getTime() + 60 * 60 * 1000) // +1 hour
     }
 
     await prisma.slot.update({
         where: { id },
         data: {
             name: name || null,
-            startTime,
-            endTime,
-            maxCapacity,
+            startTime: startTime,
+            endTime: finalEndTime,
+            maxCapacity: parseInt(maxCapacityStr),
             hideTime,
+            hideEndTime,
             eventPageId: eventPageId || null,
-            donationLink: donationLink || null,
+            donationLink: donationLink || null
         }
     })
 

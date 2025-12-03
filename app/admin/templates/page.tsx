@@ -71,6 +71,10 @@ export default async function TemplatesPage() {
                                 <span className="text-gray-700 font-medium">Collect "Donating" Info</span>
                             </label>
                             <label className="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" name="hideEndTime" className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500 border-gray-300" />
+                                <span className="text-gray-700 font-medium">Hide End Time</span>
+                            </label>
+                            <label className="flex items-center space-x-3 cursor-pointer">
                                 <input type="checkbox" name="isDefault" className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500 border-gray-300" />
                                 <span className="text-gray-700 font-medium">Set as Default</span>
                             </label>

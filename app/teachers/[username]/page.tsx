@@ -13,8 +13,9 @@ type SlotWithCount = Slot & {
     donationLink?: string | null
     collectContributing?: boolean
     collectDonating?: boolean
-    displayNameAsTitle?: boolean
-    hideTime?: boolean
+    displayNameAsTitle: boolean
+    hideTime: boolean
+    hideEndTime: boolean
 }
 
 export default async function TeacherPage({ params }: { params: Promise<{ username: string }> }) {
@@ -36,6 +37,23 @@ export default async function TeacherPage({ params }: { params: Promise<{ userna
     }
 
     const teacherName = user.name || user.username
+
+    function formatDate(date: Date) {
+        return new Intl.DateTimeFormat('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+        }).format(date)
+    }
+
+    function formatTime(date: Date) {
+        return new Intl.DateTimeFormat('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+        }).format(date)
+    }
 
     let slots: SlotWithCount[] = []
     let events: any[] = []

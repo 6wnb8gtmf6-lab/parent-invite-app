@@ -25,6 +25,23 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         notFound()
     }
 
+    function formatDate(date: Date) {
+        return new Intl.DateTimeFormat('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+        }).format(date)
+    }
+
+    function formatTime(date: Date) {
+        return new Intl.DateTimeFormat('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+        }).format(date)
+    }
+
     const teacherName = event.user.name || event.user.username
 
     return (
@@ -117,6 +134,16 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                                             {slot.description && <p className="text-slate-500 text-sm mt-1">{slot.description}</p>}
                                             {slot.donationLink && (
                                                 <DonationLink href={slot.donationLink} />
+                                            )}
+                                            {slot.hideTime ? (
+                                                <h3 className="text-xl font-bold text-gray-900">
+                                                    {formatDate(slot.startTime)}
+                                                </h3>
+                                            ) : (
+                                                <h3 className="text-xl font-bold text-gray-900">
+                                                    {formatTime(slot.startTime)}
+                                                    {!slot.hideEndTime && ` - ${formatTime(slot.endTime)}`}
+                                                </h3>
                                             )}
                                         </div>
                                     </div>

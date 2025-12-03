@@ -70,14 +70,22 @@ export default function CreateSlotForm({ templates, events }: { templates: Templ
                         />
                         <p className="text-xs text-gray-500 mt-1">Leave blank to use template name (if selected).</p>
                     </div>
-                    <div className="flex items-center h-full pt-6">
+                    <div className="flex items-center h-full pt-6 space-x-6">
                         <label className="flex items-center space-x-3 cursor-pointer">
                             <input
                                 type="checkbox"
                                 name="hideTime"
                                 className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
                             />
-                            <span className="text-sm font-bold text-gray-700">Hide Time on Public Page</span>
+                            <span className="text-sm font-bold text-gray-700">Hide Time</span>
+                        </label>
+                        <label className="flex items-center space-x-3 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                name="hideEndTime"
+                                className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
+                            />
+                            <span className="text-sm font-bold text-gray-700">Hide End Time</span>
                         </label>
                     </div>
                 </div>
@@ -97,9 +105,9 @@ export default function CreateSlotForm({ templates, events }: { templates: Templ
                     <input
                         type="datetime-local"
                         name="endTime"
-                        required
                         className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 transition-all"
                     />
+                    <p className="text-xs text-gray-500 mt-1">Optional if "Hide End Time" is checked.</p>
                 </div>
                 <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">Max Capacity</label>
