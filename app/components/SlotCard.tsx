@@ -99,6 +99,14 @@ export default function SlotCard({
                 <div className="flex items-center gap-6 self-end md:self-auto">
                     <div className={`text-sm font-medium ${isFull ? 'text-red-600' : 'text-emerald-600'}`}>
                         {isFull ? 'Fully Booked' : `${spotsOpen} ${spotsOpen === 1 ? 'spot' : 'spots'} open`}
+                        {/* Debug Info */}
+                        <div className="text-xs text-gray-400 mt-1 hidden group-hover:block">
+                            Total: {totalAttendees} (Max: {slot.maxCapacity})
+                            <br />
+                            Signups: {Array.isArray(slot.signups) ? slot.signups.length : 'N/A'}
+                            <br />
+                            Raw: {JSON.stringify(slot.signups?.map(s => s.attendeeCount))}
+                        </div>
                     </div>
 
                     {adminControls && (
