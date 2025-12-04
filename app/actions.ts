@@ -307,3 +307,19 @@ export async function submitRecommendation(formData: FormData) {
         return { success: false, message: 'Failed to submit recommendation' }
     }
 }
+
+export async function getSlotDetails(slotId: string) {
+    try {
+        const slot = await prisma.slot.findUnique({
+            where: { id: slotId },
+            include: {
+                _count: { select: { signups: true } },
+                signups: { select: { id: true, attendeeCount: true } }
+            }
+        })
+        return { success: true, slot }
+    } catch (error) {
+        console.error('Failed to fetch slot details:', error)
+        return { success: false, error: 'Failed to fetch slot details' }
+    }
+}

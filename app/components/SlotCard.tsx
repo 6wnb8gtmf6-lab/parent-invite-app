@@ -3,7 +3,8 @@
 import { Slot } from '@prisma/client'
 import SignupForm from '../SignupForm'
 import DonationLink from '../teachers/[username]/DonationLink'
-import { ReactNode, useState } from 'react'
+import { ReactNode, useState, useEffect } from 'react'
+import { getSlotDetails } from '../actions'
 
 type SlotWithCount = Slot & {
     _count: { signups: number }
@@ -29,9 +30,24 @@ export default function SlotCard({
     adminControls?: ReactNode,
     children?: ReactNode
 }) {
-    const effectiveSignups = signupsList || slot.signups
+    const [fetchedSignups, setFetchedSignups] = useState<any[] | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        // Fetch fresh data on mount to ensure accuracy
+        getSlotDetails(slot.id).then(result => {
+            if (result.success && result.slot) {
+                setFetchedSignups(result.slot.signups)
+            }
+            setIsLoading(false)
+        })
+    }, [slot.id])
+
+    // Prioritize fetched data, then prop, then slot object
+    const effectiveSignups = fetchedSignups || signupsList || slot.signups
+
     const totalAttendees = Array.isArray(effectiveSignups)
-        ? effectiveSignups.reduce((sum, s) => sum + (s.attendeeCount || 1), 0)
+        ? effectiveSignups.reduce((sum: number, s: any) => sum + (s.attendeeCount || 1), 0)
         : slot._count.signups
 
     const isFull = totalAttendees >= slot.maxCapacity
@@ -101,12 +117,16 @@ export default function SlotCard({
 
                 <div className="flex items-center gap-6 self-end md:self-auto">
                     <div className={`text-sm font-medium ${isFull ? 'text-red-600' : 'text-emerald-600'}`}>
-                        {isFull ? 'Fully Booked' : `${spotsOpen} ${spotsOpen === 1 ? 'spot' : 'spots'} open`}
+                        {isLoading ? (
+                            <span className="text-gray-400">Loading...</span>
+                        ) : (
+                            isFull ? 'Fully Booked' : `${spotsOpen} ${spotsOpen === 1 ? 'spot' : 'spots'} open`
+                        )}
                         {/* Debug Info */}
                         <div className="text-xs text-gray-400 mt-1 hidden group-hover:block">
                             Total: {totalAttendees} (Max: {slot.maxCapacity})
                             <br />
-                            Source: {signupsList ? 'Prop' : 'Slot Object'}
+                            Source: {fetchedSignups ? 'Server Action' : (signupsList ? 'Prop' : 'Slot Object')}
                             <br />
                             Signups Type: {typeof effectiveSignups}
                             <br />
