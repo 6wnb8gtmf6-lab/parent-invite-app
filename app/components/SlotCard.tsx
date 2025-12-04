@@ -103,9 +103,11 @@ export default function SlotCard({
                         <div className="text-xs text-gray-400 mt-1 hidden group-hover:block">
                             Total: {totalAttendees} (Max: {slot.maxCapacity})
                             <br />
-                            Signups: {Array.isArray(slot.signups) ? slot.signups.length : 'N/A'}
+                            Signups Type: {typeof slot.signups}
                             <br />
-                            Raw: {JSON.stringify(slot.signups?.map(s => s.attendeeCount))}
+                            Is Array: {Array.isArray(slot.signups) ? 'Yes' : 'No'}
+                            <br />
+                            Raw: {JSON.stringify(slot.signups)}
                         </div>
                     </div>
 

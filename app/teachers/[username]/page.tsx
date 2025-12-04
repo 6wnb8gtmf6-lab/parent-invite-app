@@ -80,10 +80,14 @@ export default async function TeacherPage({ params }: { params: Promise<{ userna
                 }
             })
         ])
-        slots = slotsData.map(slot => ({
+        // Deep clone to ensure plain objects and avoid serialization issues
+        slots = JSON.parse(JSON.stringify(slotsData))
+
+        // Ensure signups is always an array
+        slots = slots.map(slot => ({
             ...slot,
-            signups: slot.signups || [],
-            _count: slot._count
+            signups: Array.isArray(slot.signups) ? slot.signups : [],
+            _count: slot._count || { signups: 0 }
         }))
 
         events = eventsData
