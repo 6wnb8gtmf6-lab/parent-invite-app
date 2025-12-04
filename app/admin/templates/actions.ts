@@ -90,6 +90,20 @@ export async function updateTemplate(prevState: any, formData: FormData) {
             }
         })
 
+        // Propagate changes to all slots linked to this template
+        // @ts-ignore
+        await prisma.slot.updateMany({
+            where: { templateId: id },
+            data: {
+                name,
+                description,
+                collectContributing,
+                collectDonating,
+                displayNameAsTitle,
+                hideEndTime,
+            }
+        })
+
         revalidatePath('/admin/templates')
         return { success: true, message: 'Changes saved successfully' }
     } catch (e) {
