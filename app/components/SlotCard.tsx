@@ -27,7 +27,10 @@ export default function SlotCard({
     adminControls?: ReactNode,
     children?: ReactNode
 }) {
-    const totalAttendees = slot.signups?.reduce((sum, s) => sum + (s.attendeeCount || 1), 0) || slot._count.signups
+    const totalAttendees = Array.isArray(slot.signups)
+        ? slot.signups.reduce((sum, s) => sum + (s.attendeeCount || 1), 0)
+        : slot._count.signups
+
     const isFull = totalAttendees >= slot.maxCapacity
     const spotsOpen = slot.maxCapacity - totalAttendees
 

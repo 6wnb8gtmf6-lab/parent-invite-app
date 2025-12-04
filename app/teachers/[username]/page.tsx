@@ -68,7 +68,7 @@ export default async function TeacherPage({ params }: { params: Promise<{ userna
                 orderBy: { startTime: 'asc' },
                 include: {
                     _count: { select: { signups: true } },
-                    signups: { select: { attendeeCount: true } },
+                    signups: { select: { id: true, attendeeCount: true } },
                     createdBy: { select: { name: true, username: true } }
                 },
             }),
@@ -81,6 +81,7 @@ export default async function TeacherPage({ params }: { params: Promise<{ userna
             })
         ])
         slots = slotsData
+
         events = eventsData
     } catch (e: any) {
         console.error('Failed to fetch slots:', e)
