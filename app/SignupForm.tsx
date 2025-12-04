@@ -1,22 +1,54 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { signupForSlot } from './actions'
 
 export default function SignupForm({ slotId, collectContributing, collectDonating }: { slotId: string, collectContributing?: boolean, collectDonating?: boolean }) {
     const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
     const [errorMessage, setErrorMessage] = useState('')
 
-    async function handleSubmit(formData: FormData) {
+    // State for form fields to enable pre-filling
+    const [formData, setFormData] = useState({
+        parentName: '',
+        childName: '',
+        email: ''
+    })
+
+    // Load saved details from localStorage on mount
+    useEffect(() => {
+        const savedParentName = localStorage.getItem('parentName')
+        const savedChildName = localStorage.getItem('childName')
+        const savedEmail = localStorage.getItem('email')
+
+        if (savedParentName || savedChildName || savedEmail) {
+            setFormData({
+                parentName: savedParentName || '',
+                childName: savedChildName || '',
+                email: savedEmail || ''
+            })
+        }
+    }, [])
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target
+        setFormData(prev => ({ ...prev, [name]: value }))
+    }
+
+    async function handleSubmit(formDataObj: FormData) {
         setStatus('submitting')
         setErrorMessage('')
 
         try {
+            // Save details to localStorage for next time
+            localStorage.setItem('parentName', formData.parentName)
+            localStorage.setItem('childName', formData.childName)
+            localStorage.setItem('email', formData.email)
+
             // We need to append the slotId since it's not in the form inputs anymore if we pass it as prop
             // But wait, we can just add a hidden input or append it to formData
-            formData.append('slotId', slotId)
+            formDataObj.append('slotId', slotId)
 
-            await signupForSlot(formData)
+            await signupForSlot(formDataObj)
             setStatus('success')
         } catch (error: any) {
             console.error(error)
@@ -67,6 +99,8 @@ export default function SignupForm({ slotId, collectContributing, collectDonatin
                             name="parentName"
                             id={`name-${slotId}`}
                             required
+                            value={formData.parentName}
+                            onChange={handleInputChange}
                             disabled={status === 'submitting'}
                             className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all disabled:opacity-60 disabled:bg-gray-50"
                             placeholder="Enter parent name"
@@ -81,6 +115,8 @@ export default function SignupForm({ slotId, collectContributing, collectDonatin
                             name="childName"
                             id={`child-${slotId}`}
                             required
+                            value={formData.childName}
+                            onChange={handleInputChange}
                             disabled={status === 'submitting'}
                             className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all disabled:opacity-60 disabled:bg-gray-50"
                             placeholder="Enter child name"
@@ -96,6 +132,8 @@ export default function SignupForm({ slotId, collectContributing, collectDonatin
                         name="email"
                         id={`email-${slotId}`}
                         required
+                        value={formData.email}
+                        onChange={handleInputChange}
                         disabled={status === 'submitting'}
                         className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all disabled:opacity-60 disabled:bg-gray-50"
                         placeholder="your.email@example.com"
