@@ -79,7 +79,7 @@ export default function SignupForm({ slotId, collectContributing, collectDonatin
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                     <button
-                        onClick={onClose}
+                        onClick={() => window.location.reload()}
                         className="w-full sm:w-auto px-6 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors shadow-md"
                     >
                         Done
