@@ -10,6 +10,7 @@ type Signup = {
     childName: string | null
     email: string
     createdAt: Date
+    attendeeCount: number
 }
 
 export default function SignupList({ signups }: { signups: Signup[] }) {
@@ -48,6 +49,10 @@ export default function SignupList({ signups }: { signups: Signup[] }) {
                                 {signup.childName && <span className="mr-2">Child: {signup.childName}</span>}
                                 <span className="text-gray-400">•</span>
                                 <span className="ml-2">{signup.email}</span>
+                                <span className="text-gray-400">•</span>
+                                <span className="ml-2 font-medium text-blue-600">
+                                    {signup.attendeeCount} {signup.attendeeCount === 1 ? 'Slot' : 'Slots'}
+                                </span>
                             </div>
                             <div className="text-xs text-gray-400 mt-1">
                                 Registered {new Date(signup.createdAt).toLocaleDateString()}

@@ -209,6 +209,11 @@ export async function signupForSlot(formData: FormData) {
         // Don't throw - signup is still successful
     }
 
+    const teacherUsername = slot.createdBy?.username
+    if (teacherUsername) {
+        revalidatePath(`/teachers/${teacherUsername}`)
+    }
+
     revalidatePath('/')
     revalidatePath('/admin')
     return { success: true }
