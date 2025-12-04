@@ -85,18 +85,7 @@ export default function SignupForm({ slotId, collectContributing, collectDonatin
                         Done
                     </button>
 
-                    <button
-                        onClick={() => {
-                            setStatus('idle')
-                            setFormData(prev => ({ ...prev, childName: '' })) // Clear child name for next entry
-                        }}
-                        className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 bg-white border border-green-200 rounded-lg text-green-700 font-medium hover:bg-green-50 hover:border-green-300 transition-colors shadow-sm"
-                    >
-                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
-                        Register Sibling
-                    </button>
+
                 </div>
 
                 <p className="mt-4 text-sm text-green-600/80">

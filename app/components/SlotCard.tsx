@@ -122,18 +122,7 @@ export default function SlotCard({
                         ) : (
                             isFull ? 'Fully Booked' : `${spotsOpen} ${spotsOpen === 1 ? 'spot' : 'spots'} open`
                         )}
-                        {/* Debug Info */}
-                        <div className="text-xs text-gray-400 mt-1 hidden group-hover:block">
-                            Total: {totalAttendees} (Max: {slot.maxCapacity})
-                            <br />
-                            Source: {fetchedSignups ? 'Server Action' : (signupsList ? 'Prop' : 'Slot Object')}
-                            <br />
-                            Signups Type: {typeof effectiveSignups}
-                            <br />
-                            Is Array: {Array.isArray(effectiveSignups) ? 'Yes' : 'No'}
-                            <br />
-                            Raw: {JSON.stringify(effectiveSignups)}
-                        </div>
+
                     </div>
 
                     {adminControls && (
