@@ -1,6 +1,7 @@
 'use client'
 
 import { useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { cancelSignup } from '@/app/actions'
 
 type Signup = {
@@ -12,6 +13,7 @@ type Signup = {
 }
 
 export default function SignupList({ signups }: { signups: Signup[] }) {
+    const router = useRouter()
     const [isPending, startTransition] = useTransition()
 
     const handleRemove = (id: string) => {
@@ -19,6 +21,7 @@ export default function SignupList({ signups }: { signups: Signup[] }) {
             startTransition(async () => {
                 try {
                     await cancelSignup(id)
+                    router.refresh()
                 } catch (e) {
                     alert('Failed to remove signup')
                 }

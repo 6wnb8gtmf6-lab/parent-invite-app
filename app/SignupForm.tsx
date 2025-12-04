@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { signupForSlot } from './actions'
 
 export default function SignupForm({ slotId, collectContributing, collectDonating, onClose, maxAttendees = 1 }: { slotId: string, collectContributing?: boolean, collectDonating?: boolean, onClose?: () => void, maxAttendees?: number }) {
@@ -36,6 +37,8 @@ export default function SignupForm({ slotId, collectContributing, collectDonatin
         setFormData(prev => ({ ...prev, [name]: value }))
     }
 
+    const router = useRouter()
+
     async function handleSubmit(formDataObj: FormData) {
         setStatus('submitting')
         setErrorMessage('')
@@ -53,6 +56,7 @@ export default function SignupForm({ slotId, collectContributing, collectDonatin
 
             await signupForSlot(formDataObj)
             setStatus('success')
+            router.refresh() // Refresh server data
         } catch (error: any) {
             console.error(error)
             setStatus('error')
