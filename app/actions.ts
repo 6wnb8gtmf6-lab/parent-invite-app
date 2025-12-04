@@ -209,6 +209,30 @@ export async function signupForSlot(formData: FormData) {
     return { success: true }
 }
 
+export async function cancelSignup(signupId: string) {
+    const session = await getSession()
+    if (!session) throw new Error('Unauthorized')
+
+    const signup = await prisma.signup.findUnique({
+        where: { id: signupId },
+        include: { slot: true }
+    })
+
+    if (!signup) throw new Error('Signup not found')
+
+    // Check authorization: Admin or Slot Creator
+    if (session.user.role !== 'ADMIN' && signup.slot.createdById !== session.user.id) {
+        throw new Error('Unauthorized')
+    }
+
+    await prisma.signup.delete({
+        where: { id: signupId }
+    })
+
+    revalidatePath('/admin')
+    revalidatePath('/')
+}
+
 export async function login(prevState: any, formData: FormData) {
     try {
         const rawUsername = formData.get('username') as string

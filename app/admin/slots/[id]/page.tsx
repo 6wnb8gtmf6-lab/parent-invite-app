@@ -2,6 +2,7 @@ import { prisma } from '@/lib/db'
 import { getSession } from '@/lib/auth'
 import { redirect, notFound } from 'next/navigation'
 import EditSlotForm from './EditSlotForm'
+import SignupList from './SignupList'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,7 +15,10 @@ export default async function EditSlotPage({ params }: { params: Promise<{ id: s
     const slot = await prisma.slot.findUnique({
         where: { id },
         include: {
-            createdBy: { select: { id: true } }
+            createdBy: { select: { id: true } },
+            signups: {
+                orderBy: { createdAt: 'desc' }
+            }
         }
     })
 
@@ -43,8 +47,13 @@ export default async function EditSlotPage({ params }: { params: Promise<{ id: s
                     </a>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+                <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 mb-8">
                     <EditSlotForm slot={slot} events={events} />
+                </div>
+
+                <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+                    <h2 className="text-xl font-bold text-gray-900 mb-6">Registered Parents</h2>
+                    <SignupList signups={slot.signups} />
                 </div>
             </div>
         </div>
