@@ -22,10 +22,6 @@ export async function createTemplate(prevState: any, formData: FormData) {
         const displayNameAsTitle = formData.get('displayNameAsTitle') === 'on'
         const hideEndTime = formData.get('hideEndTime') === 'on'
         const isDefault = formData.get('isDefault') === 'on'
-        const confirmationEmailSubject = formData.get('confirmationEmailSubject') as string
-        const confirmationEmailBody = formData.get('confirmationEmailBody') as string
-        const reminderEmailSubject = formData.get('reminderEmailSubject') as string
-        const reminderEmailBody = formData.get('reminderEmailBody') as string
 
         if (isDefault) {
             // Unset other defaults
@@ -46,11 +42,7 @@ export async function createTemplate(prevState: any, formData: FormData) {
                 collectDonating,
                 displayNameAsTitle,
                 hideEndTime,
-                isDefault,
-                confirmationEmailSubject,
-                confirmationEmailBody,
-                reminderEmailSubject,
-                reminderEmailBody
+                isDefault
             }
         })
 
@@ -73,10 +65,6 @@ export async function updateTemplate(prevState: any, formData: FormData) {
         const displayNameAsTitle = formData.get('displayNameAsTitle') === 'on'
         const hideEndTime = formData.get('hideEndTime') === 'on'
         const isDefault = formData.get('isDefault') === 'on'
-        const confirmationEmailSubject = formData.get('confirmationEmailSubject') as string
-        const confirmationEmailBody = formData.get('confirmationEmailBody') as string
-        const reminderEmailSubject = formData.get('reminderEmailSubject') as string
-        const reminderEmailBody = formData.get('reminderEmailBody') as string
 
         if (isDefault) {
             // Unset other defaults
@@ -98,11 +86,7 @@ export async function updateTemplate(prevState: any, formData: FormData) {
                 collectDonating,
                 displayNameAsTitle,
                 hideEndTime,
-                isDefault,
-                confirmationEmailSubject,
-                confirmationEmailBody,
-                reminderEmailSubject,
-                reminderEmailBody
+                isDefault
             }
         })
 
@@ -116,11 +100,7 @@ export async function updateTemplate(prevState: any, formData: FormData) {
                 collectContributing,
                 collectDonating,
                 displayNameAsTitle,
-                hideEndTime,
-                confirmationEmailSubject,
-                confirmationEmailBody,
-                reminderEmailSubject,
-                reminderEmailBody
+                hideEndTime
             }
         })
 
