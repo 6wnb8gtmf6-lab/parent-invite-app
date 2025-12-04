@@ -15,6 +15,7 @@ type SlotWithDetails = Slot & {
 import RegisterPasskey from './RegisterPasskey'
 import CreateSlotForm from './CreateSlotForm'
 import DeleteSlotButton from './DeleteSlotButton'
+import SlotCard from '@/app/components/SlotCard'
 
 export default async function AdminPage() {
     const session = await getSession()
@@ -137,78 +138,50 @@ export default async function AdminPage() {
                     </div>
                     <div className="divide-y divide-gray-100">
                         {slots.map((slot, index) => (
-                            <div key={slot.id} className="p-6 hover:bg-gradient-to-r hover:from-blue-50/50 transition-all duration-200 group">
-                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                    <div className="flex items-center space-x-4 flex-1">
-                                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                                            {index + 1}
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="text-lg font-bold text-gray-900 mb-1">
-                                                {new Date(slot.startTime).toLocaleString(undefined, {
-                                                    weekday: 'long',
-                                                    month: 'long',
-                                                    day: 'numeric',
-                                                    year: 'numeric',
-                                                })}
+                            <div key={slot.id} className="p-4">
+                                <SlotCard
+                                    slot={slot}
+                                    adminControls={
+                                        <>
+                                            <a
+                                                href={`/admin/slots/${slot.id}`}
+                                                className="px-4 py-2 rounded-lg text-sm font-bold text-indigo-600 hover:text-white hover:bg-indigo-600 border border-indigo-200 hover:border-indigo-600 transition-all duration-200"
+                                            >
+                                                Edit
+                                            </a>
+                                            <DeleteSlotButton id={slot.id} />
+                                        </>
+                                    }
+                                >
+                                    <div className="space-y-4">
+                                        {isAdmin && slot.createdBy && (
+                                            <p className="text-sm text-gray-500">
+                                                Created by: <span className="font-semibold text-gray-900">{slot.createdBy.name || slot.createdBy.username}</span>
                                             </p>
-                                            <p className="text-base text-gray-600 font-medium">
-                                                {new Date(slot.startTime).toLocaleTimeString(undefined, {
-                                                    hour: 'numeric',
-                                                    minute: '2-digit',
-                                                })}
-                                                {' - '}
-                                                {new Date(slot.endTime).toLocaleTimeString(undefined, {
-                                                    hour: 'numeric',
-                                                    minute: '2-digit',
-                                                })}
-                                            </p>
+                                        )}
 
-                                            {/* Admin Info: Created By */}
-                                            {isAdmin && slot.createdBy && (
-                                                <p className="text-xs text-indigo-600 mt-1 font-medium">
-                                                    Created by: {slot.createdBy.name || slot.createdBy.username}
-                                                </p>
-                                            )}
-
-                                            <div className="mt-2 flex items-center space-x-4">
-                                                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${slot._count.signups >= slot.maxCapacity
-                                                    ? 'bg-red-100 text-red-700'
-                                                    : 'bg-green-100 text-green-700'
-                                                    }`}>
-                                                    {slot._count.signups} / {slot.maxCapacity} Booked
-                                                </span>
-                                                {slot._count.signups >= slot.maxCapacity && (
-                                                    <span className="text-xs text-red-600 font-semibold">★ FULL</span>
-                                                )}
-                                            </div>
-
-                                            {/* Signups Details */}
-                                            {slot.signups.length > 0 && (
-                                                <div className="mt-3 bg-gray-50 rounded-lg p-3 text-sm">
-                                                    <p className="font-semibold text-gray-700 mb-1">Registered Parents:</p>
-                                                    <ul className="space-y-1">
-                                                        {slot.signups.map((signup, i) => (
-                                                            <li key={i} className="text-gray-600 flex items-center">
-                                                                <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></span>
-                                                                {signup.parentName} - {signup.childName} <span className="text-gray-400 mx-1">•</span> {signup.email}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
+                                        {slot.signups.length > 0 ? (
+                                            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                                                <div className="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                                    <h4 className="text-sm font-bold text-gray-700">Registered Parents</h4>
                                                 </div>
-                                            )}
-                                        </div>
+                                                <ul className="divide-y divide-gray-100">
+                                                    {slot.signups.map((signup, i) => (
+                                                        <li key={i} className="px-4 py-3 text-sm text-gray-600 flex items-center justify-between">
+                                                            <div>
+                                                                <span className="font-medium text-gray-900">{signup.parentName}</span>
+                                                                {signup.childName && <span className="ml-1 text-gray-500">({signup.childName})</span>}
+                                                            </div>
+                                                            <span className="text-gray-400">{signup.email}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        ) : (
+                                            <p className="text-sm text-gray-500 italic">No parents have registered for this slot yet.</p>
+                                        )}
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <a
-                                            href={`/admin/slots/${slot.id}`}
-                                            className="px-4 py-3 rounded-xl text-sm font-bold text-indigo-600 hover:text-white hover:bg-indigo-600 border-2 border-indigo-200 hover:border-indigo-600 transition-all duration-200"
-                                        >
-                                            Edit
-                                        </a>
-                                        <DeleteSlotButton id={slot.id} />
-                                    </div>
-                                </div>
+                                </SlotCard>
                             </div>
                         ))}
                         {slots.length === 0 && (

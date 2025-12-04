@@ -1,6 +1,7 @@
 import { Slot } from '@prisma/client'
 import SignupForm from '../SignupForm'
 import DonationLink from '../teachers/[username]/DonationLink'
+import { ReactNode } from 'react'
 
 type SlotWithCount = Slot & {
     _count: { signups: number }
@@ -14,7 +15,15 @@ type SlotWithCount = Slot & {
     hideEndTime: boolean
 }
 
-export default function SlotCard({ slot }: { slot: SlotWithCount }) {
+export default function SlotCard({
+    slot,
+    adminControls,
+    children
+}: {
+    slot: SlotWithCount,
+    adminControls?: ReactNode,
+    children?: ReactNode
+}) {
     const isFull = slot._count.signups >= slot.maxCapacity
 
     function formatTime(date: Date) {
@@ -26,9 +35,9 @@ export default function SlotCard({ slot }: { slot: SlotWithCount }) {
 
     return (
         <details className="group bg-white border border-gray-200 overflow-hidden hover:border-blue-400 transition-colors rounded-xl shadow-sm">
-            <summary className="list-none cursor-pointer p-6 flex items-center justify-between">
+            <summary className="list-none cursor-pointer p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-6">
-                    <div className="flex flex-col items-center justify-center w-16 h-16 bg-slate-100 text-slate-900 rounded-lg">
+                    <div className="flex flex-col items-center justify-center w-16 h-16 bg-slate-100 text-slate-900 rounded-lg shrink-0">
                         <span className="text-xs font-bold uppercase tracking-wider">{new Date(slot.startTime).toLocaleString('en-US', { month: 'short' })}</span>
                         <span className="text-2xl font-bold">{new Date(slot.startTime).getDate()}</span>
                     </div>
@@ -67,10 +76,17 @@ export default function SlotCard({ slot }: { slot: SlotWithCount }) {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-6 self-end md:self-auto">
                     <div className={`text-sm font-medium ${isFull ? 'text-red-600' : 'text-emerald-600'}`}>
                         {isFull ? 'Fully Booked' : `${slot.maxCapacity - slot._count.signups} ${slot.maxCapacity - slot._count.signups === 1 ? 'spot' : 'spots'} open`}
                     </div>
+
+                    {adminControls && (
+                        <div onClick={(e) => e.preventDefault()} className="flex items-center gap-2">
+                            {adminControls}
+                        </div>
+                    )}
+
                     <div className="w-8 h-8 flex items-center justify-center text-slate-400 group-open:rotate-180 transition-transform">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -79,17 +95,19 @@ export default function SlotCard({ slot }: { slot: SlotWithCount }) {
                 </div>
             </summary>
 
-            {!isFull && (
-                <div className="p-6 pt-0 border-t border-gray-100 mt-4 bg-slate-50/50">
-                    <div className="max-w-2xl mx-auto py-8">
-                        <SignupForm
-                            slotId={slot.id}
-                            collectContributing={slot.collectContributing || false}
-                            collectDonating={slot.collectDonating || false}
-                        />
-                    </div>
+            <div className="p-6 pt-0 border-t border-gray-100 mt-4 bg-slate-50/50">
+                <div className="max-w-2xl mx-auto py-8">
+                    {children ? children : (
+                        !isFull && (
+                            <SignupForm
+                                slotId={slot.id}
+                                collectContributing={slot.collectContributing || false}
+                                collectDonating={slot.collectDonating || false}
+                            />
+                        )
+                    )}
                 </div>
-            )}
+            </div>
         </details>
     )
 }
