@@ -419,3 +419,67 @@ export async function sendReminderEmail(
         console.error('Failed to send reminder email:', error)
     }
 }
+export async function sendFeedbackEmail(
+    feedback: string,
+    recipients: string[]
+): Promise<void> {
+    const apiKey = process.env.RESEND_API_KEY
+
+    if (!apiKey) {
+        console.log('Email not configured. Would have sent feedback to:', recipients)
+        console.log('Feedback:', feedback)
+        return
+    }
+
+    const resend = new Resend(apiKey)
+
+    try {
+        const emailHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>New Feedback Received</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f3f4f6;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 0;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; padding: 40px;">
+                    <tr>
+                        <td>
+                            <h1 style="margin: 0 0 20px; color: #1f2937; font-size: 24px;">
+                                New Feedback Received
+                            </h1>
+                            
+                            <p style="margin: 0 0 20px; font-size: 16px; color: #374151;">
+                                A user has submitted a recommendation for the Parent Invite App:
+                            </p>
+                            
+                            <div style="background-color: #f9fafb; border-left: 4px solid #2563eb; padding: 20px; margin-bottom: 30px; border-radius: 4px;">
+                                <p style="margin: 0; font-size: 16px; color: #1f2937; white-space: pre-wrap;">${feedback}</p>
+                            </div>
+                            
+                            <p style="margin: 0; font-size: 14px; color: #6b7280;">
+                                This email was sent to all administrators.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+        `
+
+        await resend.emails.send({
+            from: fromEmail,
+            to: recipients,
+            subject: 'New App Feedback / Recommendation',
+            html: emailHtml,
+        })
+    } catch (error) {
+        console.error('Failed to send feedback email:', error)
+    }
+}

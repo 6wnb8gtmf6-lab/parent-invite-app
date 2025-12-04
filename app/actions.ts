@@ -272,3 +272,28 @@ export async function logout() {
     cookieStore.set('session', '', { expires: new Date(0) })
 }
 
+import { sendFeedbackEmail } from '@/lib/email'
+
+export async function submitRecommendation(formData: FormData) {
+    const feedback = formData.get('feedback') as string
+    if (!feedback) return { success: false, message: 'Feedback cannot be empty' }
+
+    try {
+        // Fetch all admin emails
+        const admins = await prisma.user.findMany({
+            where: { role: 'ADMIN' },
+            select: { email: true }
+        })
+
+        const adminEmails = admins.map(a => a.email)
+
+        if (adminEmails.length > 0) {
+            await sendFeedbackEmail(feedback, adminEmails)
+        }
+
+        return { success: true }
+    } catch (e) {
+        console.error('Failed to submit recommendation:', e)
+        return { success: false, message: 'Failed to submit recommendation' }
+    }
+}
