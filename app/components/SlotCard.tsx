@@ -33,14 +33,21 @@ export default function SlotCard({
     const [fetchedSignups, setFetchedSignups] = useState<any[] | null>(null)
     const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
-        // Fetch fresh data on mount to ensure accuracy
+    const [isOpen, setIsOpen] = useState(false)
+
+    const fetchSlotDetails = () => {
+        setIsLoading(true)
         getSlotDetails(slot.id).then(result => {
             if (result.success && result.slot) {
                 setFetchedSignups(result.slot.signups)
             }
             setIsLoading(false)
         })
+    }
+
+    useEffect(() => {
+        // Fetch fresh data on mount to ensure accuracy
+        fetchSlotDetails()
     }, [slot.id])
 
     // Prioritize fetched data, then prop, then slot object
@@ -59,9 +66,6 @@ export default function SlotCard({
             minute: '2-digit',
         }).format(new Date(date))
     }
-
-    const [isOpen, setIsOpen] = useState(false)
-    const [isSuccess, setIsSuccess] = useState(false)
 
     return (
         <details
@@ -117,16 +121,14 @@ export default function SlotCard({
                 </div>
 
                 <div className="flex items-center gap-6 self-end md:self-auto">
-                    {!isSuccess && (
-                        <div className={`text-sm font-medium ${isFull ? 'text-red-600' : 'text-emerald-600'}`}>
-                            {isLoading ? (
-                                <span className="text-gray-400">Loading...</span>
-                            ) : (
-                                isFull ? 'Fully Booked' : `${spotsOpen} ${spotsOpen === 1 ? 'spot' : 'spots'} open`
-                            )}
+                    <div className={`text-sm font-medium ${isFull ? 'text-red-600' : 'text-emerald-600'}`}>
+                        {isLoading ? (
+                            <span className="text-gray-400">Loading...</span>
+                        ) : (
+                            isFull ? 'Fully Booked' : `${spotsOpen} ${spotsOpen === 1 ? 'spot' : 'spots'} open`
+                        )}
 
-                        </div>
-                    )}
+                    </div>
 
                     {adminControls && (
                         <div onClick={(e) => e.stopPropagation()} className="flex items-center gap-2">
@@ -152,7 +154,7 @@ export default function SlotCard({
                                 collectContributing={slot.collectContributing || false}
                                 collectDonating={slot.collectDonating || false}
                                 onClose={() => setIsOpen(false)}
-                                onSuccess={() => setIsSuccess(true)}
+                                onSuccess={() => fetchSlotDetails()}
                             />
                         )
                     ))}
