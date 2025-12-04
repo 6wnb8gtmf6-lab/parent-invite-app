@@ -3,7 +3,7 @@
 import { Slot } from '@prisma/client'
 import SignupForm from '../SignupForm'
 import DonationLink from '../teachers/[username]/DonationLink'
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 
 type SlotWithCount = Slot & {
     _count: { signups: number }
@@ -35,8 +35,13 @@ export default function SlotCard({
         }).format(new Date(date))
     }
 
+    const [isOpen, setIsOpen] = useState(false)
+
     return (
-        <details className="group bg-white border border-gray-200 overflow-hidden hover:border-blue-400 transition-colors rounded-xl shadow-sm">
+        <details
+            className="group bg-white border border-gray-200 overflow-hidden hover:border-blue-400 transition-colors rounded-xl shadow-sm"
+            onToggle={(e) => setIsOpen(e.currentTarget.open)}
+        >
             <summary className="list-none cursor-pointer p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-6">
                     <div className="flex flex-col items-center justify-center w-16 h-16 bg-slate-100 text-slate-900 rounded-lg shrink-0">
@@ -99,7 +104,7 @@ export default function SlotCard({
 
             <div className="p-6 pt-0 border-t border-gray-100 mt-4 bg-slate-50/50">
                 <div className="max-w-2xl mx-auto py-8">
-                    {children ? children : (
+                    {isOpen && (children ? children : (
                         !isFull && (
                             <SignupForm
                                 slotId={slot.id}
@@ -107,7 +112,7 @@ export default function SlotCard({
                                 collectDonating={slot.collectDonating || false}
                             />
                         )
-                    )}
+                    ))}
                 </div>
             </div>
         </details>

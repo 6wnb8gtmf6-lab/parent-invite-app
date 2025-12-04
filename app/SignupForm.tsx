@@ -66,9 +66,21 @@ export default function SignupForm({ slotId, collectContributing, collectDonatin
                     </svg>
                 </div>
                 <h3 className="text-xl font-bold text-green-900 mb-2">Registration Confirmed!</h3>
-                <p className="text-green-700">
+                <p className="text-green-700 mb-6">
                     You have successfully signed up for this slot. A confirmation email has been sent to you.
                 </p>
+                <button
+                    onClick={() => {
+                        setStatus('idle')
+                        setFormData(prev => ({ ...prev, childName: '' })) // Clear child name for next entry
+                    }}
+                    className="inline-flex items-center px-4 py-2 bg-white border border-green-200 rounded-lg text-green-700 font-medium hover:bg-green-50 hover:border-green-300 transition-colors shadow-sm"
+                >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Register Another Child
+                </button>
             </div>
         )
     }
