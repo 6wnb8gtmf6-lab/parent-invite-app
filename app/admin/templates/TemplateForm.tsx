@@ -114,8 +114,6 @@ export default function TemplateForm({ template }: { template?: Template }) {
                 </label>
             </div>
 
-
-
             <button
                 type="submit"
                 disabled={isPending}
