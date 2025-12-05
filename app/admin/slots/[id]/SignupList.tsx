@@ -13,7 +13,7 @@ type Signup = {
     attendeeCount: number
 }
 
-export default function SignupList({ signups }: { signups: Signup[] }) {
+export default function SignupList({ signups, onRemove }: { signups: Signup[], onRemove?: (id: string) => void }) {
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
     const [optimisticSignups, removeOptimisticSignup] = useOptimistic(
@@ -22,6 +22,11 @@ export default function SignupList({ signups }: { signups: Signup[] }) {
     )
 
     const handleRemove = (id: string) => {
+        if (onRemove) {
+            onRemove(id)
+            return
+        }
+
         if (confirm('Are you sure you want to remove this parent from the slot?')) {
             startTransition(async () => {
                 removeOptimisticSignup(id)
@@ -30,10 +35,6 @@ export default function SignupList({ signups }: { signups: Signup[] }) {
                     router.refresh()
                 } catch (e) {
                     alert('Failed to remove signup')
-                    // In a real app we might want to revert the optimistic update here,
-                    // but useOptimistic handles resets automatically when the server action finishes/fails
-                    // if we re-validate. However, since we filter out, if it fails and we don't refresh,
-                    // it might look gone. But router.refresh() will re-fetch the true state.
                 }
             })
         }

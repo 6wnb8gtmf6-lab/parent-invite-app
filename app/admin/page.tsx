@@ -14,9 +14,7 @@ type SlotWithDetails = Slot & {
 
 import RegisterPasskey from './RegisterPasskey'
 import CreateSlotForm from './CreateSlotForm'
-import DeleteSlotButton from './DeleteSlotButton'
-import SlotCard from '@/app/components/SlotCard'
-import SignupList from './slots/[id]/SignupList'
+import AdminSlotCard from './AdminSlotCard'
 
 export default async function AdminPage() {
     const session = await getSession()
@@ -140,39 +138,7 @@ export default async function AdminPage() {
                     <div className="divide-y divide-gray-100">
                         {slots.map((slot, index) => (
                             <div key={slot.id} className="p-4">
-                                <SlotCard
-                                    slot={slot}
-                                    adminControls={
-                                        <>
-                                            <a
-                                                href={`/admin/slots/${slot.id}`}
-                                                className="px-4 py-2 rounded-lg text-sm font-bold text-indigo-600 hover:text-white hover:bg-indigo-600 border border-indigo-200 hover:border-indigo-600 transition-all duration-200"
-                                            >
-                                                Edit
-                                            </a>
-                                            <DeleteSlotButton id={slot.id} />
-                                        </>
-                                    }
-                                >
-                                    <div className="space-y-4">
-                                        {isAdmin && slot.createdBy && (
-                                            <p className="text-sm text-gray-500">
-                                                Created by: <span className="font-semibold text-gray-900">{slot.createdBy.name || slot.createdBy.username}</span>
-                                            </p>
-                                        )}
-
-                                        {slot.signups.length > 0 ? (
-                                            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                                                <div className="bg-gray-50 px-4 py-2 border-b border-gray-200">
-                                                    <h4 className="text-sm font-bold text-gray-700">Registered Parents</h4>
-                                                </div>
-                                                <SignupList signups={slot.signups} />
-                                            </div>
-                                        ) : (
-                                            <p className="text-sm text-gray-500 italic">No parents have registered for this slot yet.</p>
-                                        )}
-                                    </div>
-                                </SlotCard>
+                                <AdminSlotCard slot={slot} isAdmin={isAdmin} />
                             </div>
                         ))}
                         {slots.length === 0 && (
