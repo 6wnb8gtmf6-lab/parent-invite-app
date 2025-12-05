@@ -57,15 +57,40 @@ export default function EventForm({ event }: { event?: any }) {
             </div>
 
             <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Image URL (Optional)</label>
-                <input
-                    type="url"
-                    name="imageUrl"
-                    defaultValue={event?.imageUrl}
-                    placeholder="https://example.com/image.jpg"
-                    className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 px-4 py-3"
-                />
-                <p className="text-xs text-gray-500 mt-1">Provide a direct link to an image to display on the event page.</p>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Event Image</label>
+
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Upload Image</label>
+                        <input
+                            type="file"
+                            name="imageFile"
+                            accept="image/*"
+                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                        />
+                    </div>
+
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                            <div className="w-full border-t border-gray-300" />
+                        </div>
+                        <div className="relative flex justify-center">
+                            <span className="bg-white px-2 text-sm text-gray-500">OR</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Image URL</label>
+                        <input
+                            type="url"
+                            name="imageUrl"
+                            defaultValue={event?.imageUrl}
+                            placeholder="https://example.com/image.jpg"
+                            className="block w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 px-4 py-3"
+                        />
+                    </div>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">Upload an image or provide a direct link.</p>
             </div>
 
             <button

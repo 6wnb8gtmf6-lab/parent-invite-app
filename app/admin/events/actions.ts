@@ -4,6 +4,8 @@ import { prisma } from '@/lib/db'
 import { getSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
+import { put } from '@vercel/blob'
+
 async function requireUser() {
     const session = await getSession()
     if (!session) {
@@ -16,7 +18,21 @@ export async function createEvent(prevState: any, formData: FormData) {
     const user = await requireUser()
     const title = formData.get('title') as string
     const description = formData.get('description') as string
-    const imageUrl = formData.get('imageUrl') as string
+    let imageUrl = formData.get('imageUrl') as string
+    const imageFile = formData.get('imageFile') as File
+
+    // Handle file upload if present
+    if (imageFile && imageFile.size > 0) {
+        try {
+            const blob = await put(imageFile.name, imageFile, {
+                access: 'public',
+            })
+            imageUrl = blob.url
+        } catch (error) {
+            console.error('Failed to upload image:', error)
+            return { error: 'Failed to upload image' }
+        }
+    }
 
     // Generate slug from title
     let slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
@@ -45,11 +61,25 @@ export async function updateEvent(prevState: any, formData: FormData) {
     const id = formData.get('id') as string
     const title = formData.get('title') as string
     const description = formData.get('description') as string
-    const imageUrl = formData.get('imageUrl') as string
+    let imageUrl = formData.get('imageUrl') as string
+    const imageFile = formData.get('imageFile') as File
 
     const event = await prisma.eventPage.findUnique({ where: { id } })
     if (!event) return { error: 'Event not found' }
     if (user.role !== 'ADMIN' && event.userId !== user.id) return { error: 'Unauthorized' }
+
+    // Handle file upload if present
+    if (imageFile && imageFile.size > 0) {
+        try {
+            const blob = await put(imageFile.name, imageFile, {
+                access: 'public',
+            })
+            imageUrl = blob.url
+        } catch (error) {
+            console.error('Failed to upload image:', error)
+            return { error: 'Failed to upload image' }
+        }
+    }
 
     await prisma.eventPage.update({
         where: { id },
