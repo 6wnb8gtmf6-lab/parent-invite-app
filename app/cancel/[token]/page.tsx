@@ -67,21 +67,8 @@ export default async function CancelPage({ params }: { params: Promise<{ token: 
                             <div>
                                 <p className="text-sm font-medium text-gray-500">Date & Time</p>
                                 <p className="text-base text-gray-900">
-                                    {new Date(signup.slot.startTime).toLocaleDateString('en-US', {
-                                        weekday: 'long',
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                    })}
-                                </p>
-                                <p className="text-base text-gray-900">
-                                    {new Date(signup.slot.startTime).toLocaleTimeString('en-US', {
-                                        hour: 'numeric',
-                                        minute: '2-digit',
-                                    })} - {new Date(signup.slot.endTime).toLocaleTimeString('en-US', {
-                                        hour: 'numeric',
-                                        minute: '2-digit',
-                                    })}
+                                    {/* @ts-ignore */}
+                                    {require('@/lib/date-utils').formatSlotDateTimeForEmail(signup.slot.startTime, signup.slot.endTime).replace('<br>', ' ')}
                                 </p>
                             </div>
                         </div>

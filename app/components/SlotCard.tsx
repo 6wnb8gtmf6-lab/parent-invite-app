@@ -60,11 +60,12 @@ export default function SlotCard({
     const isFull = totalAttendees >= slot.maxCapacity
     const spotsOpen = slot.maxCapacity - totalAttendees
 
+    const { formatSlotDateTime } = require('@/lib/date-utils');
+
     function formatTime(date: Date) {
-        return new Intl.DateTimeFormat('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-        }).format(new Date(date))
+        // Use the centralized formatter that enforces app timezone
+        const { timeStr } = formatSlotDateTime(date, date) // Hack: we only need time here
+        return timeStr.split(' - ')[0] // Extract just the start time part
     }
 
     return (
@@ -82,8 +83,12 @@ export default function SlotCard({
             >
                 <div className="flex items-center gap-6">
                     <div className="flex flex-col items-center justify-center w-16 h-16 bg-slate-100 text-slate-900 rounded-lg shrink-0">
-                        <span className="text-xs font-bold uppercase tracking-wider">{new Date(slot.startTime).toLocaleString('en-US', { month: 'short' })}</span>
-                        <span className="text-2xl font-bold">{new Date(slot.startTime).getDate()}</span>
+                        <span className="text-xs font-bold uppercase tracking-wider">
+                            {new Date(slot.startTime).toLocaleDateString('en-US', { month: 'short', timeZone: 'America/Los_Angeles' })}
+                        </span>
+                        <span className="text-2xl font-bold">
+                            {new Date(slot.startTime).toLocaleDateString('en-US', { day: 'numeric', timeZone: 'America/Los_Angeles' })}
+                        </span>
                     </div>
                     <div>
                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 mb-1">

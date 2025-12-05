@@ -44,8 +44,10 @@ export async function createSlot(formData: FormData) {
     const finalHideTime = hideTime || templateData.hideTime || false
     const finalHideEndTime = hideEndTime || templateData.hideEndTime || false
 
-    const startTime = new Date(startTimeStr)
-    let finalEndTime = new Date(endTimeStr)
+    const { parseInputDate } = await import('@/lib/date-utils');
+
+    const startTime = parseInputDate(startTimeStr)
+    let finalEndTime = parseInputDate(endTimeStr)
 
     // If hiding end time and no valid end time provided, default to +1 hour
     if (finalHideEndTime && (!endTimeStr || isNaN(finalEndTime.getTime()))) {
@@ -92,8 +94,10 @@ export async function updateSlot(prevState: any, formData: FormData) {
         if (!slot) throw new Error('Slot not found')
         if (user.role !== 'ADMIN' && slot.createdById !== user.id) throw new Error('Unauthorized')
 
-        const startTime = new Date(startTimeStr)
-        let finalEndTime = new Date(endTimeStr)
+        const { parseInputDate } = await import('@/lib/date-utils');
+
+        const startTime = parseInputDate(startTimeStr)
+        let finalEndTime = parseInputDate(endTimeStr)
         if (hideEndTime && (!endTimeStr || isNaN(finalEndTime.getTime()))) {
             finalEndTime = new Date(new Date(startTime).getTime() + 60 * 60 * 1000) // +1 hour
         }

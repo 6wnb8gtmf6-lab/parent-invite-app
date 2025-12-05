@@ -1,6 +1,7 @@
 'use server'
 
 import { Resend } from 'resend'
+import { formatSlotDateTimeForEmail } from './date-utils'
 
 const fromEmail = process.env.EMAIL_FROM || 'noreply@example.com'
 
@@ -82,19 +83,8 @@ export async function sendConfirmationEmail(
                                             📅 DATE & TIME
                                         </p>
                                         <p style="margin: 0 0 20px; font-size: 16px; color: #1f2937; font-weight: bold;">
-                                            ${new Date(slot.startTime).toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        })}<br>
-                                            ${new Date(slot.startTime).toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit'
-        })} - ${new Date(slot.endTime).toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit'
-        })}
+                                            {/* @ts-ignore */}
+                                            {formatSlotDateTimeForEmail(slot.startTime, slot.endTime)}
                                         </p>
                                         
                                     </td>
@@ -226,13 +216,7 @@ export async function sendCancellationEmail(
                             </p>
                             
                             <p style="margin: 0 0 20px; font-size: 16px; color: #374151;">
-                                Your slot is scheduled for <strong>${new Date(slotTime).toLocaleDateString('en-US', {
-            weekday: 'long',
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit'
-        })}</strong> has been cancelled.
+                                Your slot is scheduled for <strong>{/* @ts-ignore */}{formatSlotDateTimeForEmail(slotTime, slotTime).replace('<br>', ' ')}</strong> has been cancelled.
                             </p>
                             
                             <p style="margin: 0; font-size: 16px; color: #374151;">
@@ -387,13 +371,8 @@ export async function sendReminderEmail(
                             </p>
 
                             <p style="margin: 0 0 20px; font-size: 16px; color: #1f2937; font-weight: bold;">
-                                ${new Date(slotTime).toLocaleDateString('en-US', {
-            weekday: 'long',
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit'
-        })}
+                                {/* @ts-ignore */}
+                                {formatSlotDateTimeForEmail(slotTime, slotTime).replace('<br>', ' ')}
                             </p>
                             
                             <p style="margin: 0 0 30px; font-size: 16px; color: #374151;">

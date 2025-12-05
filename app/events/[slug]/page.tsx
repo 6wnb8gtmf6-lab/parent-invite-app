@@ -26,22 +26,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         notFound()
     }
 
-    function formatDate(date: Date) {
-        return new Intl.DateTimeFormat('en-US', {
-            weekday: 'long',
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-        }).format(date)
-    }
 
-    function formatTime(date: Date) {
-        return new Intl.DateTimeFormat('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-        }).format(date)
-    }
 
     const teacherName = event.user.name || event.user.username
 

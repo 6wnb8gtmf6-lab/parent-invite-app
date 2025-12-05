@@ -16,9 +16,11 @@ const initialState = {
 export default function EditSlotForm({ slot, events }: { slot: any, events: EventPage[] }) {
     const [state, action, isPending] = useActionState(updateSlot, initialState)
 
+    const { formatForInput } = require('@/lib/date-utils');
+
     // Format dates for datetime-local input (YYYY-MM-DDThh:mm)
     const formatDate = (date: Date) => {
-        return new Date(date).toISOString().slice(0, 16)
+        return formatForInput(date)
     }
 
     return (
