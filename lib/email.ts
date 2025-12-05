@@ -83,8 +83,7 @@ export async function sendConfirmationEmail(
                                             📅 DATE & TIME
                                         </p>
                                         <p style="margin: 0 0 20px; font-size: 16px; color: #1f2937; font-weight: bold;">
-                                            {/* @ts-ignore */}
-                                            {formatSlotDateTimeForEmail(slot.startTime, slot.endTime)}
+                                            ${formatSlotDateTimeForEmail(slot.startTime, slot.endTime)}
                                         </p>
                                         
                                     </td>
@@ -216,7 +215,7 @@ export async function sendCancellationEmail(
                             </p>
                             
                             <p style="margin: 0 0 20px; font-size: 16px; color: #374151;">
-                                Your slot is scheduled for <strong>{/* @ts-ignore */}{formatSlotDateTimeForEmail(slotTime, slotTime).replace('<br>', ' ')}</strong> has been cancelled.
+                                Your slot is scheduled for <strong>${formatSlotDateTimeForEmail(slotTime, slotTime).replace('<br>', ' ')}</strong> has been cancelled.
                             </p>
                             
                             <p style="margin: 0; font-size: 16px; color: #374151;">
@@ -371,8 +370,7 @@ export async function sendReminderEmail(
                             </p>
 
                             <p style="margin: 0 0 20px; font-size: 16px; color: #1f2937; font-weight: bold;">
-                                {/* @ts-ignore */}
-                                {formatSlotDateTimeForEmail(slotTime, slotTime).replace('<br>', ' ')}
+                                ${formatSlotDateTimeForEmail(slotTime, slotTime).replace('<br>', ' ')}
                             </p>
                             
                             <p style="margin: 0 0 30px; font-size: 16px; color: #374151;">
