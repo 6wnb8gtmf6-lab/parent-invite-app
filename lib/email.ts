@@ -1,4 +1,4 @@
-'use server'
+
 
 import { Resend } from 'resend'
 import { formatSlotDateTimeForEmail } from './date-utils'
@@ -39,12 +39,34 @@ export async function sendConfirmationEmail(
 
     try {
         // Always use production domain for email links
-        const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://quailrun.app'
-        const cancellationUrl = `${baseUrl}/cancel/${signup.cancellationToken}`
-
         const subject = 'Slot Confirmed - Quail Run Elementary'
 
-        const emailHtml = `
+        console.log('Sending confirmation email to:', signup.email)
+
+        const emailHtml = generateConfirmationEmailHtml(signup, slot)
+
+        await resend.emails.send({
+            from: fromEmail,
+            to: signup.email,
+            subject: subject,
+            html: emailHtml,
+        })
+
+        console.log('✅ Email sent successfully to:', signup.email)
+        return { success: true }
+    } catch (error) {
+        console.error('❌ Failed to send confirmation email:', error)
+        console.error('Error details:', JSON.stringify(error, null, 2))
+        return { success: false, error: 'Failed to send email' }
+    }
+}
+
+export function generateConfirmationEmailHtml(signup: SignupDetails, slot: SlotDetails): string {
+    const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://quailrun.app'
+    const cancellationUrl = `${baseUrl}/cancel/${signup.cancellationToken}`
+    const subject = 'Slot Confirmed - Quail Run Elementary'
+
+    return `
 <!DOCTYPE html>
 <html>
 <head>
@@ -170,22 +192,7 @@ export async function sendConfirmationEmail(
     </table>
 </body>
 </html>
-        `
-
-        await resend.emails.send({
-            from: fromEmail,
-            to: signup.email,
-            subject: subject,
-            html: emailHtml,
-        })
-
-        console.log('✅ Email sent successfully to:', signup.email)
-        return { success: true }
-    } catch (error) {
-        console.error('❌ Failed to send confirmation email:', error)
-        console.error('Error details:', JSON.stringify(error, null, 2))
-        return { success: false, error: 'Failed to send email' }
-    }
+    `
 }
 
 export async function sendCancellationEmail(
@@ -204,43 +211,43 @@ export async function sendCancellationEmail(
 
     try {
         const emailHtml = `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Conference Cancelled</title>
-</head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f3f4f6;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 0;">
-        <tr>
-            <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; padding: 40px;">
-                    <tr>
-                        <td>
-                            <h1 style="margin: 0 0 20px; color: #1f2937; font-size: 24px;">
-                                Conference Cancelled
-                            </h1>
-                            
-                            <p style="margin: 0 0 20px; font-size: 16px; color: #374151;">
-                                Hi ${parentName},
+                < !DOCTYPE html >
+                    <html>
+                    <head>
+                    <meta charset="utf-8" >
+                        <title>Conference Cancelled </title>
+                            </head>
+                            < body style = "margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f3f4f6;" >
+                                <table width="100%" cellpadding = "0" cellspacing = "0" style = "background-color: #f3f4f6; padding: 40px 0;" >
+                                    <tr>
+                                    <td align="center" >
+                                        <table width="600" cellpadding = "0" cellspacing = "0" style = "background-color: #ffffff; border-radius: 8px; padding: 40px;" >
+                                            <tr>
+                                            <td>
+                                            <h1 style="margin: 0 0 20px; color: #1f2937; font-size: 24px;" >
+                                                Conference Cancelled
+                                                    </h1>
+
+                                                    < p style = "margin: 0 0 20px; font-size: 16px; color: #374151;" >
+                                                        Hi ${parentName},
+            </p>
+
+                < p style = "margin: 0 0 20px; font-size: 16px; color: #374151;" >
+                    Your slot is scheduled for <strong>${formatSlotDateTimeForEmail(slotTime, slotTime).replace('<br>', ' ')} </strong> has been cancelled.
+                        </p>
+
+                        < p style = "margin: 0; font-size: 16px; color: #374151;" >
+                        You can sign up for a different time slot at any time by visiting our website.
                             </p>
-                            
-                            <p style="margin: 0 0 20px; font-size: 16px; color: #374151;">
-                                Your slot is scheduled for <strong>${formatSlotDateTimeForEmail(slotTime, slotTime).replace('<br>', ' ')}</strong> has been cancelled.
-                            </p>
-                            
-                            <p style="margin: 0; font-size: 16px; color: #374151;">
-                                You can sign up for a different time slot at any time by visiting our website.
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>
-        `
+                            </td>
+                            </tr>
+                            </table>
+                            </td>
+                            </tr>
+                            </table>
+                            </body>
+                            </html>
+                                `
 
         await resend.emails.send({
             from: fromEmail,
@@ -356,7 +363,41 @@ export async function sendReminderEmail(
 
         const subject = 'Conference Reminder - Quail Run Elementary'
 
-        const emailHtml = `
+        console.log('Sending reminder email to:', email)
+
+        const emailHtml = generateReminderEmailHtml(
+            parentName,
+            childName,
+            slotTime,
+            cancellationToken,
+            slotName,
+            hideEndTime
+        )
+
+        await resend.emails.send({
+            from: fromEmail,
+            to: email,
+            subject: subject,
+            html: emailHtml,
+        })
+    } catch (error) {
+        console.error('Failed to send reminder email:', error)
+    }
+}
+
+export function generateReminderEmailHtml(
+    parentName: string,
+    childName: string,
+    slotTime: Date,
+    cancellationToken: string,
+    slotName?: string | null,
+    hideEndTime?: boolean
+): string {
+    const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://quailrun.app'
+    const cancellationUrl = `${baseUrl}/cancel/${cancellationToken}`
+    const subject = 'Conference Reminder - Quail Run Elementary'
+
+    return `
 <!DOCTYPE html>
 <html>
 <head>
@@ -407,17 +448,7 @@ export async function sendReminderEmail(
     </table>
 </body>
 </html>
-        `
-
-        await resend.emails.send({
-            from: fromEmail,
-            to: email,
-            subject: subject,
-            html: emailHtml,
-        })
-    } catch (error) {
-        console.error('Failed to send reminder email:', error)
-    }
+    `
 }
 export async function sendFeedbackEmail(
     feedback: string,
