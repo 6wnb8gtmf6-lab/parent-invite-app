@@ -19,7 +19,7 @@ export async function createUser(formData: FormData) {
         throw new Error('Unauthorized')
     }
 
-    const username = formData.get('username') as string
+    const username = (formData.get('username') as string).toLowerCase()
     const email = formData.get('email') as string
     const password = formData.get('password') as string
     const name = formData.get('name') as string
