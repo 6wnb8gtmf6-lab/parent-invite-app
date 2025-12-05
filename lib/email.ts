@@ -39,7 +39,7 @@ export async function sendConfirmationEmail(
         const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://quailrun.app'
         const cancellationUrl = `${baseUrl}/cancel/${signup.cancellationToken}`
 
-        const subject = 'Time Confirmed - Quail Run Elementary'
+        const subject = 'Slot Confirmed - Quail Run Elementary'
 
         const emailHtml = `
 <!DOCTYPE html>

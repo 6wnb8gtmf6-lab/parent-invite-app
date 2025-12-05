@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db'
 import { getSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
-import { put } from '@vercel/blob'
+
 
 async function requireUser() {
     const session = await getSession()
@@ -24,10 +24,8 @@ export async function createEvent(prevState: any, formData: FormData) {
     // Handle file upload if present
     if (imageFile && imageFile.size > 0) {
         try {
-            const blob = await put(imageFile.name, imageFile, {
-                access: 'public',
-            })
-            imageUrl = blob.url
+            const { uploadFile } = await import('@/lib/storage');
+            imageUrl = await uploadFile(imageFile.name, imageFile);
         } catch (error) {
             console.error('Failed to upload image:', error)
             return { error: 'Failed to upload image' }
@@ -71,10 +69,8 @@ export async function updateEvent(prevState: any, formData: FormData) {
     // Handle file upload if present
     if (imageFile && imageFile.size > 0) {
         try {
-            const blob = await put(imageFile.name, imageFile, {
-                access: 'public',
-            })
-            imageUrl = blob.url
+            const { uploadFile } = await import('@/lib/storage');
+            imageUrl = await uploadFile(imageFile.name, imageFile);
         } catch (error) {
             console.error('Failed to upload image:', error)
             return { error: 'Failed to upload image' }
