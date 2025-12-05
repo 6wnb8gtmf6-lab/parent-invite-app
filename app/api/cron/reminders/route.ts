@@ -52,7 +52,8 @@ export async function GET(request: Request) {
                     signup.slot.createdBy.name || signup.slot.createdBy.username,
                     signup.cancellationToken || '',
                     signup.slot.name,
-                    signup.slot.hideEndTime
+                    signup.slot.hideEndTime,
+                    signup.slot.hideTime
                 )
 
                 await prisma.signup.update({

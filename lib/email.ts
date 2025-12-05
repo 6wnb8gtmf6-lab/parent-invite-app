@@ -12,6 +12,7 @@ interface SlotDetails {
     teacherName: string
     name?: string | null
     hideEndTime?: boolean
+    hideTime?: boolean
 }
 
 interface SignupDetails {
@@ -47,7 +48,8 @@ export async function sendConfirmationEmail(
             startTime: slot.startTime,
             endTime: slot.endTime,
             startTimeISO: slot.startTime.toISOString(),
-            teacherName: slot.teacherName
+            teacherName: slot.teacherName,
+            hideTime: slot.hideTime
         })
 
         const emailHtml = generateConfirmationEmailHtml(signup, slot)
@@ -114,7 +116,7 @@ export function generateConfirmationEmailHtml(signup: SignupDetails, slot: SlotD
                                             📅 DATE & TIME
                                         </p>
                                         <p style="margin: 0 0 20px; font-size: 16px; color: #1f2937; font-weight: bold;">
-                                            ${formatSlotDateTimeForEmail(slot.startTime, slot.endTime, slot.hideEndTime)}
+                                            ${formatSlotDateTimeForEmail(slot.startTime, slot.endTime, slot.hideEndTime, slot.hideTime)}
                                         </p>
                                         
                                         ${slot.name ? `
@@ -354,7 +356,8 @@ export async function sendReminderEmail(
     teacherName: string,
     cancellationToken: string,
     slotName?: string | null,
-    hideEndTime?: boolean
+    hideEndTime?: boolean,
+    hideTime?: boolean
 ): Promise<void> {
     const apiKey = process.env.RESEND_API_KEY
 
@@ -377,7 +380,8 @@ export async function sendReminderEmail(
             slotTime,
             endTime,
             slotTimeISO: slotTime.toISOString(),
-            hideEndTime
+            hideEndTime,
+            hideTime
         })
 
         const emailHtml = generateReminderEmailHtml(
@@ -387,7 +391,8 @@ export async function sendReminderEmail(
             endTime,
             cancellationToken,
             slotName,
-            hideEndTime
+            hideEndTime,
+            hideTime
         )
 
         await resend.emails.send({
@@ -408,7 +413,8 @@ export function generateReminderEmailHtml(
     endTime: Date,
     cancellationToken: string,
     slotName?: string | null,
-    hideEndTime?: boolean
+    hideEndTime?: boolean,
+    hideTime?: boolean
 ): string {
     const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://quailrun.app'
     const cancellationUrl = `${baseUrl}/cancel/${cancellationToken}`
@@ -441,7 +447,7 @@ export function generateReminderEmailHtml(
                             </p>
 
                             <p style="margin: 0 0 20px; font-size: 16px; color: #1f2937; font-weight: bold;">
-                                ${formatSlotDateTimeForEmail(slotTime, endTime, hideEndTime).replace('<br>', ' ')}
+                                ${formatSlotDateTimeForEmail(slotTime, endTime, hideEndTime, hideTime).replace('<br>', ' ')}
                             </p>
                             
                             ${slotName ? `

@@ -206,7 +206,8 @@ export async function signupForSlot(formData: FormData) {
                     endTime: slot.endTime,
                     teacherName,
                     name: slot.name,
-                    hideEndTime: slot.hideEndTime
+                    hideEndTime: slot.hideEndTime,
+                    hideTime: slot.hideTime
                 }
             )
         }
