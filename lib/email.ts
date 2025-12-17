@@ -208,12 +208,12 @@ export async function sendCancellationEmail(
     email: string,
     parentName: string,
     slotTime: Date
-): Promise<void> {
+): Promise<boolean> {
     const apiKey = process.env.RESEND_API_KEY
 
     if (!apiKey) {
         console.log('Email not configured. Would have sent cancellation to:', email)
-        return
+        return false
     }
 
     const resend = new Resend(apiKey)
@@ -264,8 +264,10 @@ export async function sendCancellationEmail(
             subject: 'Conference Cancelled - Quail Run Elementary',
             html: emailHtml,
         })
+        return true
     } catch (error) {
         console.error('Failed to send cancellation email:', error)
+        return false
     }
 }
 
@@ -358,12 +360,12 @@ export async function sendReminderEmail(
     slotName?: string | null,
     hideEndTime?: boolean,
     hideTime?: boolean
-): Promise<void> {
+): Promise<boolean> {
     const apiKey = process.env.RESEND_API_KEY
 
     if (!apiKey) {
         console.log('Email not configured. Would have sent reminder to:', email)
-        return
+        return false
     }
 
     const resend = new Resend(apiKey)
@@ -401,8 +403,10 @@ export async function sendReminderEmail(
             subject: subject,
             html: emailHtml,
         })
+        return true
     } catch (error) {
         console.error('Failed to send reminder email:', error)
+        return false
     }
 }
 

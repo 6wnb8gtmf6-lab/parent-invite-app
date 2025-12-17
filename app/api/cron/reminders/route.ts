@@ -15,24 +15,39 @@ export async function GET(request: Request) {
 
         // Find signups for slots starting between 24 and 25 hours from now
         // This ensures we catch them in the hourly cron job window
-        const upcomingSignups = await prisma.signup.findMany({
-            where: {
-                slot: {
-                    startTime: {
-                        gte: twentyFourHoursFromNow,
-                        lt: twentyFiveHoursFromNow,
+        // Find signups for slots starting between 24 and 25 hours from now
+        // This ensures we catch them in the hourly cron job window
+        let upcomingSignups: any[] = []
+        let retries = 3
+        while (retries > 0) {
+            try {
+                upcomingSignups = await prisma.signup.findMany({
+                    where: {
+                        slot: {
+                            startTime: {
+                                gte: twentyFourHoursFromNow,
+                                lt: twentyFiveHoursFromNow,
+                            },
+                        },
+                        reminderSent: false,
                     },
-                },
-                reminderSent: false,
-            },
-            include: {
-                slot: {
                     include: {
-                        createdBy: true,
+                        slot: {
+                            include: {
+                                createdBy: true,
+                            },
+                        },
                     },
-                },
-            },
-        })
+                })
+                break // Success, exit loop
+            } catch (error) {
+                console.error(`Database query failed, retries left: ${retries - 1}`, error)
+                retries--
+                if (retries === 0) throw error
+                // Wait 2 seconds before retrying
+                await new Promise(resolve => setTimeout(resolve, 2000))
+            }
+        }
 
         console.log(`Found ${upcomingSignups.length} signups needing reminders`)
 
@@ -43,7 +58,7 @@ export async function GET(request: Request) {
                     return
                 }
 
-                await sendReminderEmail(
+                const sent = await sendReminderEmail(
                     signup.email,
                     signup.parentName,
                     signup.childName || 'Student',
@@ -56,10 +71,17 @@ export async function GET(request: Request) {
                     signup.slot.hideTime
                 )
 
-                await prisma.signup.update({
-                    where: { id: signup.id },
-                    data: { reminderSent: true },
-                })
+                if (sent) {
+                    await prisma.signup.update({
+                        where: { id: signup.id },
+                        data: { reminderSent: true },
+                    })
+                } else {
+                    console.error(`Failed to send reminder to ${signup.email} (signup: ${signup.id})`)
+                    // We don't update reminderSent so it will be retried next hour (if still in window)
+                    // or we can log it for manual intervention.
+                    // Note: If the window passes, it won't be retried automatically by the current logic.
+                }
             })
         )
 
