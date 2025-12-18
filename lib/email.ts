@@ -224,7 +224,7 @@ export async function sendCancellationEmail(
                     <html>
                     <head>
                     <meta charset="utf-8" >
-                        <title>Conference Cancelled </title>
+                        <title>Slot Cancelled </title>
                             </head>
                             < body style = "margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f3f4f6;" >
                                 <table width="100%" cellpadding = "0" cellspacing = "0" style = "background-color: #f3f4f6; padding: 40px 0;" >
@@ -234,7 +234,7 @@ export async function sendCancellationEmail(
                                             <tr>
                                             <td>
                                             <h1 style="margin: 0 0 20px; color: #1f2937; font-size: 24px;" >
-                                                Conference Cancelled
+                                                Slot Cancelled
                                                     </h1>
 
                                                     < p style = "margin: 0 0 20px; font-size: 16px; color: #374151;" >
@@ -261,7 +261,7 @@ export async function sendCancellationEmail(
         await resend.emails.send({
             from: fromEmail,
             to: email,
-            subject: 'Conference Cancelled - Quail Run Elementary',
+            subject: 'Slot Cancelled - Quail Run Elementary',
             html: emailHtml,
         })
         return true
@@ -374,7 +374,7 @@ export async function sendReminderEmail(
         const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://quailrun.app'
         const cancellationUrl = `${baseUrl}/cancel/${cancellationToken}`
 
-        const subject = 'Conference Reminder - Quail Run Elementary'
+        const subject = 'Slot Reminder - Quail Run Elementary'
 
         console.log('Sending reminder email:', {
             email,
