@@ -21,11 +21,9 @@ export async function createTemplate(prevState: any, formData: FormData) {
         const collectDonating = formData.get('collectDonating') === 'on'
         const displayNameAsTitle = formData.get('displayNameAsTitle') === 'on'
         const hideEndTime = formData.get('hideEndTime') === 'on'
+        const sendReminder = formData.get('sendReminder') === 'on'
+        const reminderHoursBeforeStr = formData.get('reminderHoursBefore') as string
         const isDefault = formData.get('isDefault') === 'on'
-        const confirmationEmailSubject = formData.get('confirmationEmailSubject') as string
-        const confirmationEmailBody = formData.get('confirmationEmailBody') as string
-        const reminderEmailSubject = formData.get('reminderEmailSubject') as string
-        const reminderEmailBody = formData.get('reminderEmailBody') as string
 
         if (isDefault) {
             // Unset other defaults
@@ -46,6 +44,8 @@ export async function createTemplate(prevState: any, formData: FormData) {
                 collectDonating,
                 displayNameAsTitle,
                 hideEndTime,
+                sendReminder,
+                reminderHoursBefore: reminderHoursBeforeStr ? parseInt(reminderHoursBeforeStr) : 24,
                 isDefault
             }
         })
@@ -68,11 +68,9 @@ export async function updateTemplate(prevState: any, formData: FormData) {
         const collectDonating = formData.get('collectDonating') === 'on'
         const displayNameAsTitle = formData.get('displayNameAsTitle') === 'on'
         const hideEndTime = formData.get('hideEndTime') === 'on'
+        const sendReminder = formData.get('sendReminder') === 'on'
+        const reminderHoursBeforeStr = formData.get('reminderHoursBefore') as string
         const isDefault = formData.get('isDefault') === 'on'
-        const confirmationEmailSubject = formData.get('confirmationEmailSubject') as string
-        const confirmationEmailBody = formData.get('confirmationEmailBody') as string
-        const reminderEmailSubject = formData.get('reminderEmailSubject') as string
-        const reminderEmailBody = formData.get('reminderEmailBody') as string
 
         if (isDefault) {
             // Unset other defaults
@@ -82,6 +80,8 @@ export async function updateTemplate(prevState: any, formData: FormData) {
                 data: { isDefault: false }
             })
         }
+
+        const reminderHoursBefore = reminderHoursBeforeStr ? parseInt(reminderHoursBeforeStr) : 24
 
         // @ts-ignore
         await prisma.slotTemplate.update({
@@ -94,6 +94,8 @@ export async function updateTemplate(prevState: any, formData: FormData) {
                 collectDonating,
                 displayNameAsTitle,
                 hideEndTime,
+                sendReminder,
+                reminderHoursBefore,
                 isDefault
             }
         })
@@ -108,7 +110,9 @@ export async function updateTemplate(prevState: any, formData: FormData) {
                 collectContributing,
                 collectDonating,
                 displayNameAsTitle,
-                hideEndTime
+                hideEndTime,
+                sendReminder,
+                reminderHoursBefore
             }
         })
 

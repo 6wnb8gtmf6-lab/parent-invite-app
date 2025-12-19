@@ -22,6 +22,8 @@ export async function createSlot(formData: FormData) {
     const donationLink = formData.get('donationLink') as string
     const hideTime = formData.get('hideTime') === 'on'
     const hideEndTime = formData.get('hideEndTime') === 'on'
+    const sendReminder = formData.get('sendReminder') === 'on'
+    const reminderHoursBeforeStr = formData.get('reminderHoursBefore') as string
 
     // If template is selected, copy its properties
     let templateData: any = {}
@@ -35,7 +37,9 @@ export async function createSlot(formData: FormData) {
                 collectDonating: template.collectDonating,
                 displayNameAsTitle: template.displayNameAsTitle,
                 hideTime: template.hideTime,
-                hideEndTime: template.hideEndTime
+                hideEndTime: template.hideEndTime,
+                sendReminder: template.sendReminder,
+                reminderHoursBefore: template.reminderHoursBefore
             }
         }
     }
@@ -66,7 +70,9 @@ export async function createSlot(formData: FormData) {
             ...templateData,
             name: finalName,
             hideTime: finalHideTime,
-            hideEndTime: finalHideEndTime
+            hideEndTime: finalHideEndTime,
+            sendReminder: sendReminder,
+            reminderHoursBefore: reminderHoursBeforeStr ? parseInt(reminderHoursBeforeStr) : (templateData.reminderHoursBefore || 24)
         }
     })
 
@@ -87,6 +93,8 @@ export async function updateSlot(prevState: any, formData: FormData) {
         const maxCapacityStr = formData.get('maxCapacity') as string
         const hideTime = formData.get('hideTime') === 'on'
         const hideEndTime = formData.get('hideEndTime') === 'on'
+        const sendReminder = formData.get('sendReminder') === 'on'
+        const reminderHoursBeforeStr = formData.get('reminderHoursBefore') as string
         const eventPageId = formData.get('eventPageId') as string
         const donationLink = formData.get('donationLink') as string
 
@@ -111,6 +119,8 @@ export async function updateSlot(prevState: any, formData: FormData) {
                 maxCapacity: parseInt(maxCapacityStr),
                 hideTime,
                 hideEndTime,
+                sendReminder,
+                reminderHoursBefore: reminderHoursBeforeStr ? parseInt(reminderHoursBeforeStr) : 24,
                 eventPageId: eventPageId || null,
                 donationLink: donationLink || null
             }

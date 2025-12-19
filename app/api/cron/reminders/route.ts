@@ -2,6 +2,8 @@ import { prisma } from '@/lib/db'
 import { sendReminderEmail } from '@/lib/email'
 import { NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic' // Ensure this route is not cached
+
 export async function GET(request: Request) {
     const authHeader = request.headers.get('authorization')
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -10,26 +12,24 @@ export async function GET(request: Request) {
 
     try {
         const now = new Date()
-        const twentyFourHoursFromNow = new Date(now.getTime() + 24 * 60 * 60 * 1000)
-        const twentyFiveHoursFromNow = new Date(now.getTime() + 25 * 60 * 60 * 1000)
+        // Look ahead up to 60 days. This covers most reasonable reminder settings.
+        const futureLimit = new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000)
 
-        // Find signups for slots starting between 24 and 25 hours from now
-        // This ensures we catch them in the hourly cron job window
-        // Find signups for slots starting between 24 and 25 hours from now
-        // This ensures we catch them in the hourly cron job window
-        let upcomingSignups: any[] = []
+        let potentialSignups: any[] = []
         let retries = 3
+
         while (retries > 0) {
             try {
-                upcomingSignups = await prisma.signup.findMany({
+                potentialSignups = await prisma.signup.findMany({
                     where: {
+                        reminderSent: false,
                         slot: {
                             startTime: {
-                                gte: twentyFourHoursFromNow,
-                                lt: twentyFiveHoursFromNow,
+                                gt: now,
+                                lt: futureLimit,
                             },
+                            sendReminder: true,
                         },
-                        reminderSent: false,
                     },
                     include: {
                         slot: {
@@ -49,14 +49,22 @@ export async function GET(request: Request) {
             }
         }
 
-        console.log(`Found ${upcomingSignups.length} signups needing reminders`)
+        // Filter in memory to check precise reminder timing
+        const signupsToSend = potentialSignups.filter(signup => {
+            const timeUntilStartMs = new Date(signup.slot.startTime).getTime() - now.getTime()
+            const hoursUntilStart = timeUntilStartMs / (1000 * 60 * 60)
+
+            // Check if we are within the reminder window (e.g. <= 24 hours)
+            // We use a small buffer (e.g. 0.0) so if it's exactly on the hour it counts.
+            // Since the cron runs hourly, as soon as hoursUntilStart runs below the threshold, strictly, we send.
+            return hoursUntilStart <= signup.slot.reminderHoursBefore
+        })
+
+        console.log(`Found ${potentialSignups.length} potential signups, sending ${signupsToSend.length} reminders due now.`)
 
         const results = await Promise.allSettled(
-            upcomingSignups.map(async (signup) => {
-                if (!signup.slot.createdBy?.name && !signup.slot.createdBy?.username) {
-                    console.error(`No teacher name found for signup ${signup.id}`)
-                    return
-                }
+            signupsToSend.map(async (signup) => {
+                const teacherName = signup.slot.createdBy?.name || signup.slot.createdBy?.username || 'Teacher'
 
                 const sent = await sendReminderEmail(
                     signup.email,
@@ -64,7 +72,7 @@ export async function GET(request: Request) {
                     signup.childName || 'Student',
                     signup.slot.startTime,
                     signup.slot.endTime,
-                    signup.slot.createdBy.name || signup.slot.createdBy.username,
+                    teacherName,
                     signup.cancellationToken || '',
                     signup.slot.name,
                     signup.slot.hideEndTime,
@@ -78,9 +86,7 @@ export async function GET(request: Request) {
                     })
                 } else {
                     console.error(`Failed to send reminder to ${signup.email} (signup: ${signup.id})`)
-                    // We don't update reminderSent so it will be retried next hour (if still in window)
-                    // or we can log it for manual intervention.
-                    // Note: If the window passes, it won't be retried automatically by the current logic.
+                    // We don't update reminderSent so it will be retried next hour
                 }
             })
         )
@@ -90,7 +96,7 @@ export async function GET(request: Request) {
 
         return NextResponse.json({
             success: true,
-            processed: upcomingSignups.length,
+            processed: signupsToSend.length,
             sent: successCount,
             failed: failureCount,
         })

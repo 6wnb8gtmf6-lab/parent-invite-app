@@ -27,6 +27,8 @@ model Slot {
   displayNameAsTitle  Boolean @default(false)
   hideTime            Boolean @default(false)
   hideEndTime         Boolean @default(false)
+  reminderHoursBefore Int     @default(24)
+  sendReminder        Boolean @default(true)
   donationLink   String?
 
   templateId     String?
@@ -75,6 +77,8 @@ model SlotTemplate {
   displayNameAsTitle  Boolean  @default(false)
   hideTime            Boolean  @default(false)
   hideEndTime         Boolean  @default(false)
+  reminderHoursBefore Int      @default(24)
+  sendReminder        Boolean  @default(true)
 
   slots               Slot[]
   createdAt           DateTime @default(now())
